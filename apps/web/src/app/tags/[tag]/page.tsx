@@ -1,7 +1,6 @@
-//import { Main } from "@/components/Main";
+import { Main } from "@/components/Main";
 import { toUrlPath } from "@repo/utils/url";
 import { products } from "@repo/db/data";
-import { ProductGrid } from "@/components/ProductGrid";
 
 export default async function Page({
   params,
@@ -20,25 +19,14 @@ export default async function Page({
   );
 
   return (
-    <main className="max-w-7xl mx-auto px-6 py-10">
-
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold">
-          #{tag}
-        </h1>
-
-        <p className="text-gray-600 mt-2">
-          Products tagged with "{tag}"
-        </p>
-      </div>
-
+    <div className="space-y-6">
+      <h1 className="text-2xl font-semibold">#{tag}</h1>
+      
       {filteredProducts.length === 0 ? (
-        <p className="text-gray-500">
-          No products found.
-        </p>
+        <p>0 Products</p>
       ) : (
-        <ProductGrid products={filteredProducts} />
+      <Main products={filteredProducts} />
       )}
-    </main>
+    </div>
   );
 }
