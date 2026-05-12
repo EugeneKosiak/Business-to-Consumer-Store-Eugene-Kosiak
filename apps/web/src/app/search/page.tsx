@@ -4,9 +4,11 @@ import { products } from "@repo/db/data";
 export default async function Page({
   searchParams,
 }: {
-  searchParams: { q?: string };
+  searchParams: Promise<{ q?: string }>;
 }) {
-  const query = (searchParams.q || "").toLowerCase();
+  const params = await searchParams;
+
+  const query = (params.q || "").toLowerCase();
 
   const filteredProducts = products.filter((p) => {
     return (
