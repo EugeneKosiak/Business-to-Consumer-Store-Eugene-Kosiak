@@ -105,7 +105,7 @@ jobs:
         continue-on-error: true
         uses: tomitrescak/skillpies-reporting@v1.0
         with:
-          courseId: ${{env.full-stack-development-comp3036-2026}}
+          courseId: ${{ env.COURSE_ID }}
           sectionId: major-assignment-in-ci-cd-and-devops
           testResult: ${{steps.npm1.outputs.result}}
 
@@ -128,7 +128,7 @@ jobs:
         uses: tomitrescak/skillpies-reporting@v1.0
         continue-on-error: true
         with:
-          courseId: ${{env.full-stack-development-comp3036-2026}}
+          courseId: ${{ env.COURSE_ID }}
           sectionId: major-assignment-in-ci-cd-and-devops
           testResult: ${{steps.npm2.outputs.result}}
 
@@ -151,7 +151,7 @@ jobs:
         uses: tomitrescak/skillpies-reporting@v1.0
         continue-on-error: true
         with:
-          courseId: ${{env.full-stack-development-comp3036-2026}}
+          courseId: ${{ env.COURSE_ID }}
           sectionId: major-assignment-in-ci-cd-and-devops
           testResult: ${{steps.npm3.outputs.result}}
 
