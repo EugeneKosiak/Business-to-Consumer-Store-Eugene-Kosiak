@@ -37,10 +37,15 @@ export default function CartPage() {
       ) : (
         <>
           {cart.map((item) => (
-            <div key={item.id} className="flex justify-between border p-4 mb-2">
+            <div
+              key={item.id}
+              className="flex justify-between border p-4 mb-2"
+            >
               <div>
                 <p className="font-semibold">{item.title}</p>
-                <p>${item.price} x {item.quantity}</p>
+                <p>
+                  ${item.price} x {item.quantity}
+                </p>
               </div>
 
               <button
@@ -52,9 +57,7 @@ export default function CartPage() {
             </div>
           ))}
 
-          <div className="mt-6 font-bold text-xl">
-            Total: ${total}
-          </div>
+          <div className="mt-6 font-bold text-xl">Total: ${total}</div>
 
           <button
             onClick={handleCheckout}

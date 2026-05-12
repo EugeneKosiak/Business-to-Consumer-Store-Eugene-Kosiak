@@ -83,7 +83,7 @@ export const products: Product[] = [
     urlId: "wireless-headphones",
     title: "Wireless Headphones",
     description:
-      "Premium wireless headphones with active noise cancellation and 40-hour battery life.",
+      "Premium audio device with active noise cancellation and 40-hour battery life.",
     date: new Date("2025-01-10"),
     content: wirelessHeadphonesContent,
     imageUrl:

@@ -56,8 +56,11 @@ export function Main({
                   </p>
 
                   {/* Description */}
-                  <p className="text-secondary mb-3">
-                    {product.description}
+                  <p
+                    className="text-secondary mb-3"
+                    data-test-id={`product-description-${product.urlId}`}
+                  >
+                    {product.description.substring(0, 60)}...
                   </p>
 
                   {/* Tags */}
