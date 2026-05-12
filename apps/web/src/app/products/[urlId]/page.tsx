@@ -1,18 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, use } from "react";
 import { products } from "@repo/db/data";
 import { notFound } from "next/navigation";
 
 export default function ProductPage({
   params,
 }: {
-  params: { urlId: string };
+  params: Promise<{ urlId: string }>;
 }) {
+  const { urlId } = use(params);
+
   const [showPopup, setShowPopup] = useState(false);
 
   const product = products.find(
-    (p) => p.urlId === params.urlId
+    (p) => p.urlId === urlId
   );
 
   if (!product) {
@@ -30,7 +32,7 @@ export default function ProductPage({
   return (
     <main className="max-w-6xl mx-auto px-6 py-10">
       <div className="grid md:grid-cols-2 gap-10">
-        
+
         <img
           src={product.imageUrl}
           alt={product.title}
@@ -38,7 +40,7 @@ export default function ProductPage({
         />
 
         <div className="space-y-5 relative">
-          
+
           {/* Popup */}
           {showPopup && (
             <div className="absolute top-0 right-0 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg">

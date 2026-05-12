@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, use } from "react";
 import { products } from "@repo/db/data";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
@@ -9,13 +9,15 @@ import { useCart } from "@/components/Cart/CartContext";
 export default function Page({
   params,
 }: {
-  params: { urlId: string };
+  params: Promise<{ urlId: string }>;
 }) {
+  const { urlId } = use(params);
+
   const [showPopup, setShowPopup] = useState(false);
   const { addToCart } = useCart();
 
   const product = products.find(
-    (p) => p.urlId === params.urlId
+    (p) => p.urlId === urlId
   );
 
   if (!product) {
