@@ -93,11 +93,10 @@ export const products: Product[] = [
     price: 199,
     stock: 12,
     rating: 4.8,
-    tags: "Audio,Wireless,Tech",
+    tags: "Audio,Wireless,Tech,Gaming",
     featured: true,
     active: true,
   },
-
   {
     id: 2,
     urlId: "rgb-gaming-keyboard",
@@ -117,7 +116,6 @@ export const products: Product[] = [
     featured: true,
     active: true,
   },
-
   {
     id: 3,
     urlId: "smart-watch-pro",
@@ -137,7 +135,6 @@ export const products: Product[] = [
     featured: true,
     active: true,
   },
-
   {
     id: 4,
     urlId: "running-shoes",
@@ -156,5 +153,5 @@ export const products: Product[] = [
     tags: "Shoes,Sports,Fitness",
     featured: false,
     active: true,
-  }
+  },
 ];
