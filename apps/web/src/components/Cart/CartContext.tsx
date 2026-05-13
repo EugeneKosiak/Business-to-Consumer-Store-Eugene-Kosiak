@@ -54,28 +54,29 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }
 
   function updateQuantity(id: number, quantity: number): boolean {
-    let reachedMax = false;
+      const item = cart.find((p) => p.id === id);
 
-    setCart((prev) =>
-      prev.map((item) => {
-        if (item.id !== id) return item;
+      if (!item) return false;
 
-        const max = item.stock ?? Infinity;
+      const max = item.stock;
 
-        if (quantity > max) {
-          reachedMax = true;
-          return item;
-        }
+      const reachedMax = quantity > max;
 
-        return {
-          ...item,
-          quantity: Math.max(1, quantity),
-        };
-      })
-    );
+      setCart((prev) =>
+        prev.map((p) => {
+          if (p.id !== id) return p;
 
-    return reachedMax;
-  }
+          return {
+            ...p,
+            quantity: reachedMax
+              ? max
+              : Math.max(1, quantity),
+          };
+        })
+      );
+
+      return reachedMax;
+    }
 
   return (
     <CartContext.Provider

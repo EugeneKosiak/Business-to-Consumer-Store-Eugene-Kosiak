@@ -77,9 +77,8 @@ test.describe("CART SCREEN", () => {
         await plus.click();
       }
 
-      await expect(page.getByTestId("max-qty-message")).toHaveText(
-        /max quantity/i
-      );
+      await expect(page.getByTestId("max-qty-message")).toBeVisible({ timeout: 10000 });
+      await expect(page.getByTestId("max-qty-message")).toContainText("Max quantity");
     },
   );
 
