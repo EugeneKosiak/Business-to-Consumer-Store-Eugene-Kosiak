@@ -13,29 +13,34 @@ export default function Page({
 }) {
   const { urlId } = use(params);
 
-  const [showPopup, setShowPopup] = useState(false);
-  const { addToCart } = useCart();
+  const [popupMessage, setPopupMessage] = useState("");
+  const { addToCart, cart } = useCart();
 
   const product = products.find((p) => p.urlId === urlId);
 
   if (!product) {
-    return (
-      <div className="max-w-4xl mx-auto px-6 py-10">
-        Product not found
-      </div>
-    );
+    return <div className="max-w-4xl mx-auto px-6 py-10">Product not found</div>;
   }
+
+  const currentQuantity =
+    cart.find((item) => item.id === product.id)?.quantity || 0;
 
   function handleAddToCart() {
     if (!product) return;
+
+    if (currentQuantity >= product.stock) {
+      setPopupMessage("You already reached max stock for this item");
+      setTimeout(() => setPopupMessage(""), 4000);
+      return;
+    }
+
     addToCart(product);
-    setShowPopup(true);
-    setTimeout(() => setShowPopup(false), 2000);
+    setPopupMessage("Item added to cart");
+
+    setTimeout(() => setPopupMessage(""), 4000);
   }
 
-  const cleanedContent = product.content
-    .replace(/^# .*$/m, "")
-    .trim();
+  const cleanedContent = product.content.replace(/^# .*$/m, "").trim();
 
   return (
     <main className="max-w-6xl mx-auto px-6 py-10">
@@ -44,35 +49,22 @@ export default function Page({
       </Link>
 
       <div className="grid md:grid-cols-2 gap-10 mt-6">
-        <div>
-          <img
-            src={product.imageUrl}
-            alt={product.title}
-            className="w-full h-[500px] object-cover rounded-2xl shadow-sm"
-          />
-        </div>
+        <img
+          src={product.imageUrl}
+          alt={product.title}
+          className="w-full h-[500px] object-cover rounded-2xl"
+        />
 
         <div className="space-y-5 relative">
-          {showPopup && (
-            <div className="absolute top-0 right-0 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg">
-              Item added to cart
+          {popupMessage && (
+            <div className="absolute top-0 right-0 bg-green-600 text-white px-4 py-2 rounded-lg">
+              {popupMessage}
             </div>
           )}
 
-          <div className="flex items-center gap-3 text-sm text-gray-500">
-            <span>{product.category}</span>
-            <span>•</span>
-            <span>⭐ {product.rating}</span>
-          </div>
-
           <h1 className="text-4xl font-bold">{product.title}</h1>
 
-          <p
-            className="text-gray-600 text-lg"
-            data-test-id="product-description"
-          >
-            {product.description}
-          </p>
+          <p className="text-gray-600">{product.description}</p>
 
           <div className="text-4xl font-bold text-blue-600">
             ${product.price} AUD
@@ -80,19 +72,17 @@ export default function Page({
 
           <button
             onClick={handleAddToCart}
-            className="w-full bg-black text-white py-3 rounded-xl hover:bg-gray-800 transition"
+            className="w-full bg-black text-white py-3 rounded-xl"
           >
             Add To Cart
           </button>
         </div>
       </div>
 
-      {/* Markdown (FIXED FOR TESTING) */}
       <div className="mt-14 border-t pt-10">
         <h2 className="text-2xl font-bold mb-6">Product Details</h2>
-
         <article
-          className="prose prose-lg max-w-none"
+          className="prose max-w-none"
           data-test-id="product-markdown"
         >
           <ReactMarkdown>{cleanedContent}</ReactMarkdown>

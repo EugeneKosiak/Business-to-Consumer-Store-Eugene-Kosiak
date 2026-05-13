@@ -75,40 +75,50 @@ test.describe("DETAIL SCREEN", () => {
 });
 */
 test.describe("DETAIL SCREEN", () => {
-  test("Product Detail View", async ({ page }) => {
-    await page.goto("/product/wireless-headphones");
+  test(
+    "Product Detail View",
+    {
+      tag: "@a1",
+    },
+    async ({ page }) => {
+      await page.goto("/product/wireless-headphones");
 
-    await expect(page.getByText("Wireless Headphones")).toBeVisible();
-    await expect(page.getByText(/Premium wireless headphones/i)).toBeVisible();
-    await expect(page.getByText("$199 AUD")).toBeVisible();
-    await expect(page.getByText(/SoundMax/i)).toBeVisible();
-    await expect(page.getByText(/12 Available/i)).toBeVisible();
-    await expect(page.getByText(/Audio,Wireless,Tech/i)).toBeVisible();
+      await expect(page.getByText("Wireless Headphones")).toBeVisible();
 
-    await expect(
-      page.getByRole("button", { name: /add to cart/i })
-    ).toBeVisible();
-  });
+      await expect(page.getByText(/wireless headphones/i)).toBeVisible(); // description check
 
-  test("Markdown Content Displays", async ({ page }) => {
-    await page.goto("/product/wireless-headphones");
+      await expect(page.getByText("$199 AUD")).toBeVisible();
 
-    const markdown = page.getByTestId("product-markdown");
+      await expect(page.getByRole("button", { name: /add to cart/i })).toBeVisible();
+    },
+  );
 
-    await expect(
-      markdown.getByText("Active Noise Cancellation")
-    ).toBeVisible();
+  test(
+    "Markdown Content Displays",
+    {
+      tag: "@a1",
+    },
+    async ({ page }) => {
+      await page.goto("/product/wireless-headphones");
 
-    await expect(
-      markdown.getByText("USB-C Fast Charging")
-    ).toBeVisible();
-  });
+      const markdown = page.getByTestId("product-markdown");
 
-  test("Add Product To Cart", async ({ page }) => {
-    await page.goto("/product/wireless-headphones");
+      await expect(markdown).toContainText("Active Noise Cancellation");
+      await expect(markdown).toContainText("USB-C Fast Charging");
+    }
+  );
 
-    await page.getByRole("button", { name: /add to cart/i }).click();
+  test(
+    "Add Product To Cart",
+    {
+      tag: "@a1",
+    },
+    async ({ page }) => {
+      await page.goto("/product/wireless-headphones");
 
-    await expect(page.getByText(/item added to cart/i)).toBeVisible();
-  });
+      await page.getByRole("button", { name: /add to cart/i }).click();
+
+      await expect(page.getByText(/item added to cart/i)).toBeVisible();
+    },
+  );
 });

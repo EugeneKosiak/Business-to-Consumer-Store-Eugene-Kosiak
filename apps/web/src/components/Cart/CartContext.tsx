@@ -10,6 +10,7 @@ type CartContextType = {
   addToCart: (product: Product) => void;
   removeFromCart: (id: number) => void;
   clearCart: () => void;
+  updateQuantity: (id: number, quantity: number) => boolean;
 };
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -17,7 +18,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
 
-  // Load from localStorage (fixes test reset issues)
+  // Load from localStorage
   useEffect(() => {
     const stored = localStorage.getItem("cart");
     if (stored) setCart(JSON.parse(stored));
@@ -52,9 +53,39 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setCart([]);
   }
 
+  function updateQuantity(id: number, quantity: number): boolean {
+    let reachedMax = false;
+
+    setCart((prev) =>
+      prev.map((item) => {
+        if (item.id !== id) return item;
+
+        const max = item.stock ?? Infinity;
+
+        if (quantity > max) {
+          reachedMax = true;
+          return item;
+        }
+
+        return {
+          ...item,
+          quantity: Math.max(1, quantity),
+        };
+      })
+    );
+
+    return reachedMax;
+  }
+
   return (
     <CartContext.Provider
-      value={{ cart, addToCart, removeFromCart, clearCart }}
+      value={{
+        cart,
+        addToCart,
+        removeFromCart,
+        clearCart,
+        updateQuantity,
+      }}
     >
       {children}
     </CartContext.Provider>
