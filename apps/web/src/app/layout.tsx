@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import "./globals.css";
 import { toUrlPath } from "@repo/utils/url";
 import { TagList } from "@/components/Menu/TagList";
+import { CategoryList } from "@/components/Menu/CategoryList";
 import { products } from "@repo/db/data";
 import Link from "next/link";
 import Image from "next/image";
@@ -67,23 +68,9 @@ export default async function RootLayout({
                   {/* CATEGORIES */}
                   <div>
                     <p className="font-semibold mb-2">Categories</p>
-                    <ul className="space-y-2">
-                      {["Electronics", "Gaming", "Clothing"].map((cat) => {
-                        const count = activeProducts.filter(
-                          (p) => p.category === cat
-                        ).length;
 
-                        return (
-                          <li key={cat}>
-                            <Link
-                              href={`/category/${toUrlPath(cat)}`}
-                              className="text-gray-500 hover:text-black"
-                            >
-                              {cat} <span>{count}</span>
-                            </Link>
-                          </li>
-                        );
-                      })}
+                    <ul className="space-y-2">
+                      <CategoryList products={activeProducts} />
                     </ul>
                   </div>
 
