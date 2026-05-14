@@ -19,32 +19,32 @@ export default async function LoginPage() {
 
   if (!token || !loggedIn) {
     return (
-      <main className="min-h-screen flex items-center justify-center bg-gray-100">
-        <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
-          <h1 className="text-3xl font-bold mb-4 text-center">
+        <main className="min-h-screen flex items-center justify-center bg-gray-100">
+        <div className="bg-white text-black p-8 rounded-xl shadow-xl border-4 border-black w-full max-w-md">
+            <h1 className="text-3xl font-bold mb-4 text-center text-black">
             User Login
-          </h1>
+            </h1>
 
-          <form action="/api/auth" method="POST" className="space-y-4">
+            <form action="/api/auth" method="POST" className="space-y-4">
             <input
-              name="password"
-              type="password"
-              placeholder="Enter password"
-              className="w-full px-3 py-2 border rounded"
+                name="password"
+                type="password"
+                placeholder="Enter password"
+                className="w-full px-3 py-2 border rounded text-black"
             />
 
             <button className="w-full bg-black text-white py-2 rounded">
-              Login
+                Login
             </button>
-          </form>
+            </form>
 
-          <p className="text-center text-sm mt-3">
+            <p className="text-center text-sm mt-3 text-gray-700">
             Demo password: <b>user123</b>
-          </p>
+            </p>
         </div>
-      </main>
+        </main>
     );
-  }
+}
 
   return (
     <main className="p-10 text-center">

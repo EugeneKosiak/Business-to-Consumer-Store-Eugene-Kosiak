@@ -60,7 +60,7 @@ export default function Page({
   const cleanedContent = product.content.replace(/^# .*$/m, "").trim();
 
   return (
-    <main className="max-w-6xl mx-auto px-6 py-10">
+    <main className="w-full px-6 py-10">
       <Link href="/" className="text-sm text-gray-500 hover:text-black">
         ← Back to products
       </Link>
@@ -89,7 +89,10 @@ export default function Page({
 
           <button
             onClick={handleAddToCart}
-            className="w-full bg-black text-white py-3 rounded-xl"
+            className="w-full py-3 rounded-xl font-semibold transition-colors
+                      bg-black text-white
+                      dark:bg-white dark:text-black
+                      hover:opacity-90"
           >
             Add To Cart
           </button>

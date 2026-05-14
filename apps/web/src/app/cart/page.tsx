@@ -61,7 +61,7 @@ export default function CartPage() {
   }
 
   return (
-    <div className="p-10 max-w-3xl mx-auto">
+    <div className="p-6 w-full">
       <h1 className="text-2xl font-bold mb-6">Your Cart</h1>
 
       {/* MAX QUANTITY MESSAGE */}
@@ -164,7 +164,10 @@ export default function CartPage() {
 
           <button
             onClick={handleCheckout}
-            className="mt-4 bg-black text-white px-4 py-2 rounded"
+            className="mt-4 px-4 py-2 rounded font-semibold 
+            bg-black text-white 
+            dark:bg-white dark:text-black 
+            hover:opacity-90 transition"
           >
             Checkout
           </button>

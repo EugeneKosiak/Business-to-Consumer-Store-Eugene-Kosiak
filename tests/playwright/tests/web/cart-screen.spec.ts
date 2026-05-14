@@ -84,7 +84,7 @@ test.describe("CART SCREEN", () => {
   );
 
   test(
-    "Mock Checkout",
+    "Checkout from Cart",
     {
       tag: "@a1",
     },
@@ -108,13 +108,13 @@ test.describe("CART SCREEN", () => {
 
       await expect(
         page.getByRole("button", {
-          name: /mock checkout/i,
+          name: /Checkout/i,
         })
       ).toBeVisible();
 
       await page
         .getByRole("button", {
-          name: /mock checkout/i,
+          name: /Checkout/i,
         })
         .click();
 
