@@ -37,10 +37,6 @@ export default async function LoginPage() {
                 Login
             </button>
             </form>
-
-            <p className="text-center text-sm mt-3 text-gray-700">
-            Demo password: <b>user123</b>
-            </p>
         </div>
         </main>
     );
