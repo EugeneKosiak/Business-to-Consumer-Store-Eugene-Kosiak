@@ -55,14 +55,14 @@ export default function ProductList({ products }: { products: Product[] }) {
     const filterDate = new Date(year, month, day);
     filterDate.setHours(0, 0, 0, 0); // normalise to remove time
 
-    // filter if the post date matches the filtered date
+    // filter if the product date matches the filtered date
     filtered = filtered.filter((p) => {
-      const postDate =
+      const productDate =
         p.date instanceof Date ? p.date : new Date(p.date);
 
-      postDate.setHours(0, 0, 0, 0); // normalise to remove time
+      productDate.setHours(0, 0, 0, 0); // normalise to remove time
 
-      return postDate >= filterDate; // keep post date that is AFTER or ON the filter date
+      return productDate >= filterDate; // keep product date that is AFTER or ON the filter date
     });
   }
 
@@ -88,9 +88,9 @@ export default function ProductList({ products }: { products: Product[] }) {
     );
   }
 
-  // Function to toggle active status of a post, takes the post ID as a parameter
+  // Function to toggle active status of a product, takes the product ID as a parameter
   async function toggleActive(id: number) {
-    // Update database with the status change, geting the posts ID
+    // Update database with the status change, geting the products ID
     await fetch("/api/products/toggle", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
