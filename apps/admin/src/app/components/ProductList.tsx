@@ -123,7 +123,10 @@ export default function ProductList({ products }: { products: Product[] }) {
 
   return (
     <main className="p-8 font-sans">
-      <h1 className="admin-title text-4xl mb-4">
+      <h1
+        className="admin-title text-4xl mb-4"
+        data-test-id="admin-title"
+      >
         Admin of Products
       </h1>
 
@@ -134,9 +137,12 @@ export default function ProductList({ products }: { products: Product[] }) {
           // Send request to log out, delete the auth cookie
           await fetch("/api/auth", {
             method: "DELETE",
+            credentials: "same-origin",
           });
 
-          window.location.href = "/"; // redirect to login screen
+          await new Promise((resolve) => setTimeout(resolve, 100));
+
+          window.location.href = "/";
         }}
         className="mb-4"
       >

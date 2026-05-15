@@ -1,7 +1,6 @@
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { env } from "@repo/env/admin";
-//import { prisma } from "@repo/db/prisma";
 import { products } from "@repo/db/data";
 import ProductList from "./components/ProductList";
 
@@ -15,16 +14,17 @@ export default async function Home() {
 
   try {
     /* 2. Verify JWT token exists and is valid
-      get all cookies, specifically look for auth token cookie safely without throwing error if it doesn't exist
+      if token exists, check if token is valid, signed in with secret, not expired
     */
-    // if token exists, check if token is valid, signed in with secret, not expired
     if (token) {
       jwt.verify(token, env.JWT_SECRET);
       loggedIn = true;
     }
-  } catch { // 3. Handles invalid / missing token
+  } catch {
+    // 3. Handles invalid / missing token
     loggedIn = false;
   }
+
   // 4. Shows login if not authenticated
   if (!loggedIn) {
     return (
@@ -49,7 +49,6 @@ export default async function Home() {
                 name="password"
                 type="password"
                 className="admin-input"
-                placeholder="Enter password"
               />
             </div>
 
@@ -63,12 +62,5 @@ export default async function Home() {
   }
 
   // 5. Shows admin content if valid
-  // Fetch from database
-  /*
-  const posts = await prisma.post.findMany({
-    orderBy: { id: "asc" },
-  });
-  */
-
   return <ProductList products={products} />;
 }
