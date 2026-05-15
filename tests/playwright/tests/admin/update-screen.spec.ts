@@ -349,7 +349,7 @@ test.describe("ADMIN UPDATE SCREEN", () => {
   test(
     "Save product form",
     {
-      tag: "@a2",
+      tag: "@a3",
     },
     async ({ userPage }) => {
       await userPage.goto("/product/wireless-headphones");
@@ -378,7 +378,7 @@ test.describe("ADMIN UPDATE SCREEN", () => {
   test(
     "Create product form",
     {
-      tag: "@a2",
+      tag: "@a3",
     },
     async ({ userPage }) => {
       await userPage.goto("/products/create");
