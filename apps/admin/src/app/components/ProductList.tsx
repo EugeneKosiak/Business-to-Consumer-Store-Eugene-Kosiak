@@ -137,12 +137,9 @@ export default function ProductList({ products }: { products: Product[] }) {
           // Send request to log out, delete the auth cookie
           await fetch("/api/auth", {
             method: "DELETE",
-            credentials: "same-origin",
           });
 
-          await new Promise((resolve) => setTimeout(resolve, 100));
-
-          window.location.href = "/";
+          window.location.href = "/"; // redirect to login screen
         }}
         className="mb-4"
       >
