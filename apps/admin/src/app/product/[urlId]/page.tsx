@@ -27,7 +27,7 @@ export default async function PostPage({
     );
   }
 
-  // Fetch product from MOCK DATA instead of Prisma
+  // Fetch product from MOCK DATA using urlId
   const product = products.find((p) => p.urlId === urlId);
 
   if (!product) {

@@ -60,6 +60,7 @@ export async function POST(
 
   const productId = Number(id);
 
+  // Parase request body - get raw text (JSON data) from frontend to create product object.
   let body;
 
   try {
@@ -71,6 +72,7 @@ export async function POST(
     );
   }
 
+  // What the form data is made up of
   const {
     title,
     description,
@@ -86,6 +88,7 @@ export async function POST(
     active,
   } = body;
 
+  // Checks if required fields exist and aren’t empty
   if (
     !title?.trim() ||
     !description?.trim() ||
@@ -100,6 +103,7 @@ export async function POST(
     );
   }
 
+  // Find product with matching id
   const index = products.findIndex(
     (product) => product.id === productId
   );
@@ -111,9 +115,12 @@ export async function POST(
     );
   }
 
+  // Retrieves the current product, ! = product is not undefined 
   const existingProduct = products[index]!;
 
+  // Update product - Replaces the old product with updated data
   products[index] = {
+    // Keeps unchanged fields:
     id: existingProduct.id,
     urlId: existingProduct.urlId,
     date: existingProduct.date,
@@ -126,9 +133,10 @@ export async function POST(
     category,
     brand,
 
+    // Converts types safely
     price: Number(price ?? 0),
     stock: Number(stock ?? 0),
-    rating: Number(rating ?? 0),
+    rating: Number(rating ?? 0), 
 
     featured: Boolean(featured),
     active: Boolean(active),

@@ -7,18 +7,21 @@ import { useRouter } from "next/navigation";
 
 export default function CartPage() {
   const router = useRouter();
-
+  // Store cart data and actions
   const { cart, removeFromCart, clearCart, updateQuantity } = useCart();
-
+  // Store state if checkout is complete
   const [checkedOut, setCheckedOut] = useState(false);
+  // Store max quantity message
   const [message, setMessage] = useState("");
+  // Store if the user is logged in
   const [checkingAuth, setCheckingAuth] = useState(true);
-
+  // Stores timeout ID for clearing messages - to prevent overlap timers
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     async function checkAuth() {
       try {
+        // Check if the user is logged in
         const res = await fetch("/api/auth/me");
         const data = await res.json();
 
@@ -34,14 +37,16 @@ export default function CartPage() {
     }
 
     checkAuth();
-  }, [router]);
+  }, [router]); // runs once when the page is loaded
 
   async function handleCheckout() {
+    // Send cart to backend
     const res = await fetch("/api/purchase", {
       method: "POST",
       body: JSON.stringify({ cart }),
     });
 
+    // Success full checkout
     if (res.ok) {
       setCheckedOut(true);
       clearCart();
@@ -104,9 +109,10 @@ export default function CartPage() {
                     ${item.price.toFixed(2)} each × {item.quantity}
                   </p>
 
-                  {/* ✅ QUANTITY CONTROLS */}
+                  {/* QUANTITY CONTROLS */}
                   <div className="flex items-center gap-2 mt-2">
                     <button
+                      // Display Message of max quantity of item reached based on current stock
                       onClick={() => {
                         requestAnimationFrame(() => {
                           const nextQty = item.quantity + 1;

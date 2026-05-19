@@ -1,16 +1,17 @@
 import { NextResponse } from "next/server";
 import { products } from "@repo/db/data";
 
-// simple slug function
+// slug function - to type title of product in URL link rather than by number
 function generateUrlId(title: string) {
   return title
     .trim()
     .toLowerCase()
-    .replace(/\s+/g, "-")
-    .replace(/[^\w-]+/g, "");
+    .replace(/\s+/g, "-")       // spaces → dashes
+    .replace(/[^\w-]+/g, "");   // remove non-word chars
 }
 
 export async function POST(req: Request) {
+  // Extract form data from request body (JSON data sent from frontend to backend)
   const body = await req.json();
 
   const {
@@ -38,13 +39,15 @@ export async function POST(req: Request) {
   ) {
     return NextResponse.json(
       { error: "Missing required fields" },
-      { status: 400 }
+      { status: 400 } // 400 - invalid request form user
     );
   }
 
+  // Create new product
   const newProduct = {
     id: products.length + 1,
 
+    // URL ID from title (e.g. "My First Post" → "my-first-post")
     urlId: generateUrlId(title),
 
     title,
@@ -54,8 +57,6 @@ export async function POST(req: Request) {
     imageUrl,
     category,
     brand,
-
-    // REQUIRED FIELD
     date: new Date(),
 
     price: Number(price ?? 0),

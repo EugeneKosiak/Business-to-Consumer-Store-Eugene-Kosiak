@@ -16,23 +16,25 @@ type CartContextType = {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
+  // Store cart state
   const [cart, setCart] = useState<CartItem[]>([]);
 
   // Load from localStorage
   useEffect(() => {
     const stored = localStorage.getItem("cart");
     if (stored) setCart(JSON.parse(stored));
-  }, []);
+  }, []); // runs once - when the page loads
 
-  // Persist cart
+  // Saves updated cart
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
-  }, [cart]);
+  }, [cart]); // runs when cart changes
 
   function addToCart(product: Product) {
     setCart((prev) => {
       const existing = prev.find((p) => p.id === product.id);
 
+      // Compares existing item and new product added to cart
       if (existing) {
         return prev.map((p) =>
           p.id === product.id
@@ -41,7 +43,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         );
       }
 
-      return [...prev, { ...product, quantity: 1 }];
+      return [...prev, { ...product, quantity: 1 }]; // add to cart with quantity of 1
     });
   }
 
@@ -54,18 +56,24 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }
 
   function updateQuantity(id: number, quantity: number): boolean {
-      const item = cart.find((p) => p.id === id);
+      const item = cart.find((p) => p.id === id); // find item
 
-      if (!item) return false;
+      if (!item) return false; // do nothing
 
-      const max = item.stock;
+      const max = item.stock; // max quantity of a product
 
-      const reachedMax = quantity > max;
+      const reachedMax = quantity > max; // check if user exceeds stock
 
       setCart((prev) =>
         prev.map((p) => {
           if (p.id !== id) return p;
 
+
+          /*
+            If too high → cap at max
+            Else → allow value
+            Never go below 1
+          */
           return {
             ...p,
             quantity: reachedMax

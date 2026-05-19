@@ -3,21 +3,25 @@
 import { useEffect, useState } from "react";
 
 export default function PurchasesPage() {
+  // Stores list of purchases - start empty
   const [purchases, setPurchases] = useState<any[]>([]);
+  // Stores feedback message (success/error) - null means no message
   const [message, setMessage] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/purchase")
-      .then((res) => res.json())
-      .then(setPurchases);
-  }, []);
+      .then((res) => res.json()) // convert response to JSON
+      .then(setPurchases); // store its state
+  }, []); // dependency array - runs once during page loading
 
   const removePurchase = async (id: number) => {
+    // Calls API to delete
     const res = await fetch(`/api/purchase?id=${id}`, {
       method: "DELETE",
     });
 
     if (res.ok) {
+      // Remove deleted item that matchs product id and api id
       setPurchases((prev) => prev.filter((p) => p.id !== id));
 
       setMessage("Purchase removed successfully");
@@ -49,7 +53,7 @@ export default function PurchasesPage() {
                 {new Date(p.date).toLocaleString()}
             </p>
 
-            {/* REMOVE BUTTON (vertically centered on right) */}
+            {/* REMOVE BUTTON */}
             <button
                 onClick={() => removePurchase(p.id)}
                 className="absolute right-4 top-1/2 -translate-y-1/2 text-sm px-3 py-1 bg-red-500 text-white rounded"

@@ -8,9 +8,11 @@ export default async function Page({
 }) {
   const { year, month } = await params;
 
+  // Create Date range
   const start = new Date(Number(year), Number(month) - 1, 1);
   const end = new Date(Number(year), Number(month), 1);
 
+  // Filter active products and filter them by date
   const filteredProducts = products
     .filter((p) => p.active)
     .filter((p) => {
@@ -18,6 +20,7 @@ export default async function Page({
       return d >= start && d < end;
     });
 
+  // Format month from num to string 
   const monthName = new Date(
     Number(year),
     Number(month) - 1
