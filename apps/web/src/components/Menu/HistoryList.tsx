@@ -1,5 +1,6 @@
 import { history } from "@/functions/history";
-import type { Post } from "@prisma/client";
+//import type { Post } from "@prisma/client";
+import type { Product } from "@repo/db/data";
 
 const months = [
   "",
@@ -20,13 +21,13 @@ const months = [
 export async function HistoryList({
   selectedYear,
   selectedMonth,
-  posts,
+  products,
 }: {
   selectedYear?: string;
   selectedMonth?: string;
-  posts: Post[];
+  products: Product[];
 }) {
-  const historyItems = history(posts);
+  const historyItems = history(products);
 
   return <div>History List</div>;
 }

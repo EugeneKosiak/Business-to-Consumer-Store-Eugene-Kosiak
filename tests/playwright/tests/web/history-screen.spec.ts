@@ -1,5 +1,60 @@
 import { expect, test } from "./fixtures";
 
+
+test.describe("HISTORY SCREEN", () => {
+  test(
+    "January 2025 History",
+    { tag: "@a1" },
+    async ({ page }) => {
+      await page.goto("/history/2025/1");
+
+      // Running Shoes is in Jan 2025
+      await expect(
+        page.getByRole("link", { name: "Running Shoes" }),
+      ).toBeVisible();
+    },
+  );
+
+  test(
+    "February 2025 History",
+    { tag: "@a1" },
+    async ({ page }) => {
+      await page.goto("/history/2025/2");
+
+      // Wireless Headphones is in Feb 2025
+      await expect(
+        page.getByRole("link", { name: "Wireless Headphones" }),
+      ).toBeVisible();
+    },
+  );
+
+  test(
+    "November 2024 History",
+    { tag: "@a1" },
+    async ({ page }) => {
+      await page.goto("/history/2024/11");
+
+      // RGB Keyboard is in Nov 2024
+      await expect(
+        page.getByRole("link", { name: "RGB Gaming Keyboard" }),
+      ).toBeVisible();
+    },
+  );
+
+  test(
+    "Invalid History",
+    { tag: "@a1" },
+    async ({ page }) => {
+      await page.goto("/history/2024/1");
+
+      await expect(
+        page.getByText("0 Products"),
+      ).toBeVisible();
+    },
+  );
+});
+
+/* - Old tests from post data/code
 test.describe("HISTORY SCREEN", () => {
   test(
     "Existing history",
@@ -38,3 +93,4 @@ test.describe("HISTORY SCREEN", () => {
     },
   );
 });
+*/

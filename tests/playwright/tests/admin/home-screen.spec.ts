@@ -15,6 +15,77 @@ test.describe("ADMIN HOME SCREEN", () => {
       await page.goto("/");
       await expect(page.getByText("Sign In", { exact: true })).toBeVisible();
 
+      await expect(
+        page.getByText("Sign in to your account", { exact: true }),
+      ).toBeVisible();
+    },
+  );
+
+  test(
+    "Can login",
+    {
+      tag: "@a2",
+    },
+    async ({ page }) => {
+      await page.goto("/");
+
+      await page.getByLabel("Password", { exact: true }).fill("admin123");
+      await page.getByText("Sign In", { exact: true }).click();
+
+      await expect(page.getByText("Admin of Products")).toBeVisible();
+
+      const cookies = await page.context().cookies();
+      const passwordCookie = cookies.find(
+        (cookie) => cookie.name === "auth_token",
+      );
+      expect(passwordCookie).toBeDefined();
+
+      await page.getByText("Logout").click();
+
+      // wait for logout request to complete
+      await page.waitForResponse((res) =>
+        res.url().includes("/api/auth") && res.request().method() === "DELETE"
+      );
+
+      // wait for UI to settle back to login state
+      await expect(
+        page.getByText("Sign in to your account"),
+      ).toBeVisible();
+
+      await expect(page.locator("article")).toHaveCount(0);
+    },
+  );
+
+  test(
+    "Shows home screen to authorised user",
+    {
+      tag: "@a2",
+    },
+    async ({ userPage }) => {
+      await userPage.goto("/");
+
+      await expect(
+        userPage.getByText("Admin of Products", { exact: true }),
+      ).toBeVisible();
+
+      await expect(await userPage.locator("article").count()).toBe(4);
+    },
+  );
+});
+
+
+
+/* - Old tests from post data/code
+test.describe("ADMIN HOME SCREEN", () => {
+  test(
+    "Shows login screen",
+    {
+      tag: "@a2",
+    },
+    async ({ page }) => {
+      await page.goto("/");
+      await expect(page.getByText("Sign In", { exact: true })).toBeVisible();
+
       // HOME SCREEN > Shows Login screen if not logged
       await expect(
         page.getByText("Sign in to your account", { exact: true }),
@@ -72,3 +143,4 @@ test.describe("ADMIN HOME SCREEN", () => {
     },
   );
 });
+*/

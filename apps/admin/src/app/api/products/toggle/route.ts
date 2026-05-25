@@ -1,3 +1,30 @@
+import { NextResponse } from "next/server";
+import { products } from "@repo/db/data";
+
+export async function POST(req: Request) {
+  // Get id from request body (JSON data sent from frontend to backend)
+  const { id } = await req.json();
+
+  // Find product with matching id
+  const product = products.find(
+    (product) => product.id === Number(id)
+  );
+
+  if (!product) {
+    return new NextResponse(
+      "Product not found",
+      { status: 404 }
+    );
+  }
+
+  // Toggle active status
+  product.active = !product.active;
+
+  // Return updated product
+  return NextResponse.json(product);
+}
+
+/* - Post prisma data
 import { prisma } from "@repo/db/prisma";
 
 export async function POST(req: Request) {
@@ -23,3 +50,4 @@ export async function POST(req: Request) {
 
   return Response.json(updated);
 }
+*/

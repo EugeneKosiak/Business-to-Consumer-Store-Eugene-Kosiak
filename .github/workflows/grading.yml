@@ -88,9 +88,9 @@ jobs:
           max-score: 1
 
       ####################
-      # ASSIGNMENT 2.1
+      # MAJOR ASSIGNMENT PART 1
       ####################
-      - name: Test Assignment 1 with Playwright
+      - name: Test Major Assignment UI part 1 with Playwright
         id: npm1
         uses: WesternSydneyUniversity/autograding-command-grader@v2
         continue-on-error: true
@@ -100,19 +100,19 @@ jobs:
           command: pnpm turbo test-1
           timeout: 10
           max-score: 1
-      - name: Report Assignment 1 to SkillPies
+      - name: Report Major Assignment Part 1 to SkillPies
         if: always() # run on failed tests as well
         continue-on-error: true
         uses: tomitrescak/skillpies-reporting@v1.0
         with:
-          courseId: ${{env.COURSE_ID}}
-          sectionId: assignment-2-1-blog-client-in-next-js
+          courseId: ${{ env.COURSE_ID }}
+          sectionId: major-assignment-in-ci-cd-and-devops
           testResult: ${{steps.npm1.outputs.result}}
 
       ####################
-      # ASSIGNMENT 2.2
+      # MAJOR ASSIGNMENT PART 2
       ####################
-      - name: Test Assignment 2 with Playwright
+      - name: Test Major Assignment UI part 2 with Playwright
         id: npm2
         uses: WesternSydneyUniversity/autograding-command-grader@v2
         continue-on-error: true
@@ -123,19 +123,19 @@ jobs:
           timeout: 10
           max-score: 1
 
-      - name: Report Assignment 2 to SkillPies
+      - name: Report Major Assignment Part 2 to SkillPies
         if: always() # run on failed tests as well
         uses: tomitrescak/skillpies-reporting@v1.0
         continue-on-error: true
         with:
-          courseId: ${{env.COURSE_ID}}
-          sectionId: assignment-2-2-blog-admin-in-databases
+          courseId: ${{ env.COURSE_ID }}
+          sectionId: major-assignment-in-ci-cd-and-devops
           testResult: ${{steps.npm2.outputs.result}}
 
       ####################
-      # ASSIGNMENT 2.3
+      # MAJOR ASSIGNMENT PART 3
       ####################
-      - name: Test Assignment 3 with Playwright
+      - name: Test Major Assignment Backend with Playwright
         id: npm3
         uses: WesternSydneyUniversity/autograding-command-grader@v2
         continue-on-error: true
@@ -146,13 +146,13 @@ jobs:
           timeout: 10
           max-score: 1
 
-      - name: Report Assignment 3 to SkillPies
+      - name: Report Major Assignment to SkillPies
         if: always() # run on failed tests as well
         uses: tomitrescak/skillpies-reporting@v1.0
         continue-on-error: true
         with:
-          courseId: ${{env.COURSE_ID}}
-          sectionId: assignment-2-3-blog-backend-in-authentication-and-authorisation
+          courseId: ${{ env.COURSE_ID }}
+          sectionId: major-assignment-in-ci-cd-and-devops
           testResult: ${{steps.npm3.outputs.result}}
 
       - name: Autograding Reporter

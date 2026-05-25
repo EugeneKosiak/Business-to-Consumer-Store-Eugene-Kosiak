@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
 import { env } from "@repo/env/admin";
 
 // Secret key used to sign JWT tokens
 const SECRET = env.JWT_SECRET;
+const HASHED_PASSWORD = "$2b$10$nI9hxujTB/Et2ZK6Aj8TEeKxXL8inNrvEzO8wuQr2XIH3W36sd1VO";
 
 // POST method (LOGIN)
 export async function POST(req: Request) {
@@ -21,7 +23,14 @@ export async function POST(req: Request) {
     password = formData.get("password") as string | null; // extract password from form data
   }
 
-  if (password !== "123") {
+  if (!password) {
+    return new Response("Missing password", { status: 400 });
+  }
+
+  // secure password comparison using bcrypt
+  const isValid = await bcrypt.compare(password, HASHED_PASSWORD);
+
+  if (!isValid) {
     return new Response("Invalid password", { status: 401 }); // 401 - unauthorized
   }
 

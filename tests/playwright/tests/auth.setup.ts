@@ -15,7 +15,7 @@ setup(
       cookies: [
         {
           name: "auth_token",
-          value: "123",
+          value: "admin123",
           domain: "localhost",
           secure: false,
           expires: -1,
@@ -43,7 +43,7 @@ setup(
     const apiContext = await playwright.request.newContext();
 
     await apiContext.post("/api/auth", {
-      data: JSON.stringify({ password: "123" }),
+      data: JSON.stringify({ password: "admin123" }),
       headers: {
         "Content-Type": "application/json",
       },
