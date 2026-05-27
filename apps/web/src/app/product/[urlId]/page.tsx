@@ -120,7 +120,7 @@ export default function Page({
 }
 */
 
-
+/* - Current
 "use client";
 
 import { useState, use, useEffect } from "react";
@@ -245,4 +245,33 @@ export default function Page({
       </div>
     </main>
   );
+}
+*/
+
+import { prisma } from "@repo/db/prisma";
+import ProductClient from "./ProductClient";
+
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ urlId: string }>;
+}) {
+  const { urlId } = await params;
+
+  const product = await prisma.product.findFirst({
+    where: {
+      urlId,
+      active: true,
+    },
+  });
+
+  if (!product) {
+    return (
+      <div className="max-w-4xl mx-auto px-6 py-10">
+        Product not found
+      </div>
+    );
+  }
+
+  return <ProductClient product={product} />;
 }
