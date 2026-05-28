@@ -5,17 +5,7 @@ import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import { useCart } from "@/components/Cart/CartContext";
 import { useRouter } from "next/navigation";
-
-type Product = {
-  id: number;
-  urlId: string;
-  title: string;
-  description: string;
-  price: number;
-  stock: number;
-  imageUrl: string;
-  content: string;
-};
+import type { Product } from "@prisma/client";
 
 export default function ProductClient({
   product,
