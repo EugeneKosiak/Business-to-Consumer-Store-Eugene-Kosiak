@@ -15,6 +15,12 @@ async function login(page: any) {
 }
 
 test.describe("CART SCREEN", () => {
+
+  test.beforeEach(async ({ page }) => {
+    await page.goto("/api/seed");
+  });
+
+  
   test(
     "Add Product To Cart",
     {
