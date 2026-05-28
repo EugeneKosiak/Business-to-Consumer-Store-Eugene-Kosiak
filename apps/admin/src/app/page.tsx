@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 import { env } from "@repo/env/admin";
-import { products } from "@repo/db/data";
+import { prisma } from "@repo/db/prisma";
 import ProductList from "./components/ProductList";
 
 export default async function Home() {
@@ -30,7 +30,7 @@ export default async function Home() {
     return (
       <main className="min-h-screen flex items-center justify-center bg-gray-100">
         <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
-          
+
           <h1 className="admin-title text-3xl mb-2 text-center">
             Admin Login
           </h1>
@@ -61,6 +61,13 @@ export default async function Home() {
     );
   }
 
-  // 5. Shows admin content if valid
+  // 5. Fetch products from Prisma
+  const products = await prisma.product.findMany({
+    orderBy: {
+      date: "desc",
+    },
+  });
+
+  // 6. Shows admin content if valid
   return <ProductList products={products} />;
 }
