@@ -15,14 +15,21 @@ export async function seed() {
   // Clear existing data
   await client.purchaseItem.deleteMany();
   await client.purchase.deleteMany();
+
+  // Delete users BEFORE re-creating them
+  await client.user.deleteMany();
+
+  await client.product.deleteMany();
+
+  // Create default test user
   await client.user.create({
     data: {
       email: "user@test.com",
-      password: "$2b$10$Uuw2CoflIqOEdQI/qBTKReTP6Ds6HMN0Cp981CCipiyoatYlVlwYy",
+      password:
+        "$2b$10$Uuw2CoflIqOEdQI/qBTKReTP6Ds6HMN0Cp981CCipiyoatYlVlwYy",
       role: "CUSTOMER",
     },
   });
-  await client.product.deleteMany();
 
   // Insert products
   for (const product of products) {
