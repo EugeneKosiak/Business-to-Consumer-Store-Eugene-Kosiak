@@ -1,5 +1,45 @@
+/*
 export async function seed() {
 
+}
+*/
+
+import { PrismaClient } from "@prisma/client";
+import { products } from "@repo/db/data";
+
+const client = new PrismaClient();
+
+export async function seed() {
+  console.log("🌱 Seeding data...");
+
+  // Clear existing data
+  await client.purchaseItem.deleteMany();
+  await client.purchase.deleteMany();
+  await client.product.deleteMany();
+
+  // Insert products
+  for (const product of products) {
+    await client.product.create({
+      data: {
+        title: product.title,
+        content: product.content,
+        category: product.category,
+        description: product.description,
+        imageUrl: product.imageUrl,
+        tags: product.tags,
+        urlId: product.urlId,
+        active: product.active,
+        date: new Date(product.date),
+        stock: product.stock,
+        price: product.price,
+        brand: product.brand,
+        rating: product.rating,
+        featured: product.featured,
+      },
+    });
+  }
+
+  console.log("✅ Seeding complete");
 }
 
 /* - Seed file for posts prisma
