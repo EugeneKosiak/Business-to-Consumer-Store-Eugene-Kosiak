@@ -2,14 +2,13 @@ import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { env } from "@repo/env/admin";
-import { prisma } from "@repo/db/prisma";
 
 // Secret key used to sign JWT tokens
 const SECRET = env.JWT_SECRET;
+const HASHED_PASSWORD = "$2b$10$nI9hxujTB/Et2ZK6Aj8TEeKxXL8inNrvEzO8wuQr2XIH3W36sd1VO";
 
 // POST method (LOGIN)
 export async function POST(req: Request) {
-  let email: string | null = null;
   let password: string | null = null; // store incoming password
 
   // Get request content type (e.g. JSON or form)
@@ -18,43 +17,26 @@ export async function POST(req: Request) {
   // Check if request body is JSON
   if (contentType.includes("application/json")) {
     const body = await req.json(); // Parse (breakdown) JSON body
-    email = body.email;
     password = body.password; // extract password from JSON body
   } else {
     const formData = await req.formData(); // // Parse (breakdown) form data
-    email = formData.get("email") as string | null;
     password = formData.get("password") as string | null; // extract password from form data
   }
 
-  if (!email || !password) {
-    return new Response("Missing credentials", { status: 400 });
-  }
-
-  // Find admin user by email
-  const user = await prisma.user.findUnique({
-    where: {
-      email,
-    },
-  });
-
-  // Check admin exists
-  if (!user || user.role !== "ADMIN") {
-    return new Response("Invalid credentials", { status: 401 });
+  if (!password) {
+    return new Response("Missing password", { status: 400 });
   }
 
   // secure password comparison using bcrypt
-  const isValid = await bcrypt.compare(password, user.password);
+  const isValid = await bcrypt.compare(password, HASHED_PASSWORD);
 
   if (!isValid) {
-    return new Response("Invalid credentials", { status: 401 }); // 401 - unauthorized
+    return new Response("Invalid password", { status: 401 }); // 401 - unauthorized
   }
 
   // Create a JWT token with payload { user: "admin" }
   const token = jwt.sign(
-    {
-      user: user.email,
-      role: user.role,
-    },
+    { user: "admin" }, // data stored in the token
     SECRET, // Secret used to sign token
     { expiresIn: "15m" } // token expiration - 3 min to 15 min is good for security
   );
