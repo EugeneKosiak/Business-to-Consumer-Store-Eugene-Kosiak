@@ -42,11 +42,19 @@ export default async function RootLayout({
   const token = cookieStore.get("user_auth_token")?.value;
 
   let loggedIn = false;
+  let userName = "";
 
   try {
     if (token) {
-      jwt.verify(token, process.env.JWT_SECRET || "user-secret-key");
+      const decoded = jwt.verify(
+        token,
+        process.env.JWT_SECRET || "user-secret-key"
+      ) as {
+        name: string;
+      };
+
       loggedIn = true;
+      userName = decoded.name;
     }
   } catch {
     loggedIn = false;
@@ -168,9 +176,16 @@ export default async function RootLayout({
               {/* MAIN AREA */}
               <div className="flex-1 flex flex-col">
 
-                <header className="flex justify-between p-4 border-b">
+                <header className="flex justify-between items-center p-4 border-b">
                   <SearchBox />
-                  <ThemeSwitch />
+                  <div className="flex items-center gap-4">
+                    {loggedIn && (
+                      <p className="font-semibold">
+                        Hi {userName}
+                      </p>
+                    )}
+                    <ThemeSwitch />
+                  </div>
                 </header>
 
                 <main className="p-6 overflow-y-auto">

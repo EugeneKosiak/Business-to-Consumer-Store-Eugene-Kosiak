@@ -27,9 +27,9 @@ export async function POST(req: Request) {
   });
 
   if (existingUser) {
-    return new Response("User already exists", {
-      status: 409,
-    });
+    return NextResponse.redirect(
+      new URL("/register?error=exists", req.url)
+    );
   }
 
   // Hash password
