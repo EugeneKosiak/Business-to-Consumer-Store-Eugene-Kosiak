@@ -9,7 +9,7 @@ test.describe("REGISTER SCREEN", () => {
   test(
     "Register Screen Loads",
     {
-      tag: "@a3",
+      tag: "@a1",
     },
     async ({ page }) => {
       await page.goto("/register");
@@ -43,7 +43,7 @@ test.describe("REGISTER SCREEN", () => {
   test(
     "User Can Register Successfully",
     {
-      tag: "@a3",
+      tag: "@a1",
     },
     async ({ page }) => {
       await page.goto("/register");
@@ -81,7 +81,7 @@ test.describe("REGISTER SCREEN", () => {
   test(
     "Existing User Cannot Register Again",
     {
-      tag: "@a3",
+      tag: "@a1",
     },
     async ({ page }) => {
       await page.goto("/register");
@@ -97,7 +97,7 @@ test.describe("REGISTER SCREEN", () => {
 
       await page
         .getByPlaceholder("Enter password")
-        .fill("user123");
+        .fill("test");
 
       await page
         .getByRole("button", {
@@ -120,7 +120,7 @@ test.describe("REGISTER SCREEN", () => {
   test(
     "New User Can Login After Registering",
     {
-      tag: "@a3",
+      tag: "@a1",
     },
     async ({ page }) => {
       // Register
@@ -136,7 +136,7 @@ test.describe("REGISTER SCREEN", () => {
 
       await page
         .getByPlaceholder("Enter password")
-        .fill("password123");
+        .fill("test");
 
       await page
         .getByRole("button", {
@@ -159,7 +159,7 @@ test.describe("REGISTER SCREEN", () => {
 
       await page
         .getByPlaceholder("Enter password")
-        .fill("password123");
+        .fill("test");
 
       await page
         .getByRole("button", {
@@ -179,7 +179,7 @@ test.describe("REGISTER SCREEN", () => {
   test(
     "Register Fields Are Required",
     {
-      tag: "@a3",
+      tag: "@a1",
     },
     async ({ page }) => {
       await page.goto("/register");
