@@ -52,6 +52,15 @@ export default async function LoginPage() {
             <button className="w-full bg-black text-white py-2 rounded">
                 Login
             </button>
+
+            <div className="mt-4 text-center">
+              <Link
+                href="/register"
+                className="text-blue-600 hover:underline"
+              >
+                Create a new account
+              </Link>
+            </div>
             </form>
         </div>
         </main>
