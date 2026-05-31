@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-//import { Post } from "@prisma/client";
 import type { Product } from "@prisma/client";
 import Link from "next/link";
 
@@ -150,6 +149,12 @@ export default function ProductList({ products }: { products: Product[] }) {
 
       <Link href="/products/create">
         <button className="admin-btn mb-6 text-xl">Create Product</button>
+      </Link>
+
+      <Link href="/purchases">
+        <button className="admin-btn mb-6 ml-4 text-xl">
+          View Purchases
+        </button>
       </Link>
 
       <div className="flex flex-wrap gap-4 mb-6">

@@ -72,6 +72,33 @@ test.describe("ADMIN HOME SCREEN", () => {
       await expect(await userPage.locator("article").count()).toBe(4);
     },
   );
+
+  test(
+    "Can navigate to purchase records page",
+    {
+      tag: "@a3",
+    },
+    async ({ userPage }) => {
+      await userPage.goto("/");
+
+
+      await expect(
+        userPage.getByText("View Purchases")
+      ).toBeVisible();
+
+      await userPage
+        .locator('a:has-text("View Purchases")')
+        .click();
+
+      await expect(userPage).toHaveURL("/purchases");
+
+      await expect(
+        userPage.getByText("Purchase Records", {
+          exact: true,
+        })
+      ).toBeVisible();
+    },
+  );
 });
 
 

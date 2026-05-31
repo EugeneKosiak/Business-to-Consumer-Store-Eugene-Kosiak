@@ -74,6 +74,38 @@ export async function seed() {
     });
   }
 
+  const user = await client.user.findUnique({
+    where: {
+      email: "user@test.com",
+    },
+  });
+
+  if (user) {
+    await client.purchase.create({
+      data: {
+        userId: user.id,
+        total: 348,
+        date: new Date(),
+
+        items: {
+          create: [
+            {
+              productId: 1,
+              title: "Wireless Headphones",
+              price: 199,
+              quantity: 1,
+            },
+            {
+              productId: 2,
+              title: "RGB Gaming Keyboard",
+              price: 149,
+              quantity: 1,
+            },
+          ],
+        },
+      },
+    });
+  }
 
   console.log("✅ Seeding complete");
 }
