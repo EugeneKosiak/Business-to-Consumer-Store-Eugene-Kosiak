@@ -14,7 +14,29 @@ export default function PurchasesPage() {
       .then(setPurchases); // store its state
   }, []); // dependency array - runs once during page loading
 
+  /* - New version - this works, but I think the original is more readable
   const removePurchase = async (id: number) => {
+    // Calls API to delete
+    const res = await fetch(`/api/purchase?id=${id}`, {
+      method: "DELETE",
+    });
+
+    if (res.ok) {
+      const refreshed = await fetch("/api/purchase").then((r) =>
+        r.json()
+      );
+
+      setPurchases(refreshed);
+
+      setMessage("Purchase removed successfully");
+    } else {
+      setMessage("Failed to remove purchase");
+    }
+
+    setTimeout(() => setMessage(null), 2500);
+  };
+  */
+ const removePurchase = async (id: number) => {
     // Calls API to delete
     const res = await fetch(`/api/purchase?id=${id}`, {
       method: "DELETE",
@@ -47,7 +69,12 @@ export default function PurchasesPage() {
         <p>No purchases yet</p>
       ) : (
         purchases.map((p) => (
-          <div key={p.id} className="border p-4 mb-4 rounded relative">
+          <div
+              key={p.id}
+              data-test-id="purchase-item"
+              data-purchase-id={p.id}
+              className="border p-4 mb-4 rounded relative"
+            >
             <p>
                 <strong>Date:</strong>{" "}
                 {new Date(p.date).toLocaleString()}

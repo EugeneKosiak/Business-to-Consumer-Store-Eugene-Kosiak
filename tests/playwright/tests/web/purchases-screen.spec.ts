@@ -36,7 +36,11 @@ test.describe("PURCHASES SCREEN", () => {
     await login(page);
 
     // reset purchases for current logged in user
-    await page.goto("/api/purchases?reset=true");
+    await page.evaluate(async () => {
+      await fetch("/api/purchase?reset=true", {
+        method: "DELETE",
+      });
+    });
   });
 /* - Still not working
   test(
@@ -134,9 +138,7 @@ test.describe("PURCHASES SCREEN", () => {
 
       await page.goto("/purchases");
 
-      const purchase = page.locator("div.border", {
-        hasText: "Wireless Headphones",
-      });
+      const purchase = page.getByTestId("purchase-item").first();
 
       await expect(purchase).toBeVisible();
 
@@ -146,7 +148,7 @@ test.describe("PURCHASES SCREEN", () => {
         })
         .click();
 
-      await expect(purchase).not.toBeVisible();
+      await expect(page.getByTestId("purchase-item")).toHaveCount(0);
 
       await expect(
         page.getByText(

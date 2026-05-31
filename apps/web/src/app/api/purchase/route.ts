@@ -238,7 +238,13 @@ export async function DELETE(req: Request) {
 
     // Reset route for tests
     if (searchParams.get("reset")) {
-      await prisma.purchaseItem.deleteMany();
+      await prisma.purchaseItem.deleteMany({
+        where: {
+          purchase: {
+            userId: decoded.id,
+          },
+        },
+      });
 
       await prisma.purchase.deleteMany({
         where: {
@@ -246,9 +252,7 @@ export async function DELETE(req: Request) {
         },
       });
 
-      return Response.json({
-        success: true,
-      });
+      return Response.json({ success: true });
     }
 
     const id = Number(searchParams.get("id"));
