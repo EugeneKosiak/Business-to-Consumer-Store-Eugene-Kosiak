@@ -4,7 +4,14 @@ import { env } from "@repo/env/admin";
 import { prisma } from "@repo/db/prisma";
 import ProductList from "./components/ProductList";
 
-export default async function Home() {
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
+  const params = await searchParams;
+  const error = params.error;
+
   /* 1. Checks for JWT token
     get all cookies, specifically look for auth token cookie safely without throwing error if it doesn't exist
   */
@@ -38,6 +45,12 @@ export default async function Home() {
           <p className="text-center text-gray-600 mb-6">
             Sign in to your account
           </p>
+
+          {error === "invalid" && (
+            <div className="mb-4 p-3 rounded bg-red-100 text-red-700 border border-red-300">
+              ADMIN ACCESS ONLY: Invalid email or password.
+            </div>
+          )}
 
           <form action="/api/auth" method="POST" className="space-y-4">
 

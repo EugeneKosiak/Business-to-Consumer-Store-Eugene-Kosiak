@@ -4,7 +4,13 @@ import Link from "next/link";
 
 const SECRET = process.env.JWT_SECRET || "user-secret-key";
 
-export default async function LoginPage() {
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
+  const params = await searchParams;
+  const error = params.error;
   /* 1. Checks for JWT token
     get all cookies, specifically look for auth token cookie safely without throwing error if it doesn't exist
   */
@@ -32,6 +38,12 @@ export default async function LoginPage() {
             <h1 className="text-3xl font-bold mb-4 text-center text-black">
             User Login
             </h1>
+
+            {error === "invalid" && (
+              <div className="mb-4 p-3 rounded bg-red-100 text-red-700 border border-red-300">
+                Invalid email or password. Please register.
+              </div>
+            )}
 
             <form action="/api/auth" method="POST" className="space-y-4">
 

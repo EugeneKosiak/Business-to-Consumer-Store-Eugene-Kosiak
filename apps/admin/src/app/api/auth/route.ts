@@ -94,14 +94,18 @@ export async function POST(req: Request) {
 
   // Check user exists
   if (!user) {
-    return new Response("Invalid email or password", { status: 401 });
+    return NextResponse.redirect(
+      new URL("/?error=invalid", req.url)
+    );
   }
 
   // secure password comparison using bcrypt
   const isValid = await bcrypt.compare(password, user.password);
 
   if (!isValid) {
-    return new Response("Invalid email or password", { status: 401 }); // 401 - unauthorized
+    return NextResponse.redirect(
+      new URL("/?error=invalid", req.url)
+    );
   }
 
   // Create a JWT token with payload { user: "admin" }

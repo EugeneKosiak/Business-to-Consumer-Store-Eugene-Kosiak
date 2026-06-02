@@ -25,15 +25,30 @@ export async function POST(req: Request) {
   });
 
   // Check user exists
+  /*
   if (!user) {
     return new Response("Invalid email or password", { status: 401 });
+  }
+  */
+
+  if (!user) {
+    return NextResponse.redirect(
+      new URL("/login?error=invalid", req.url)
+    );
   }
 
   // compares user input with stored hashed password
   const isValid = await bcrypt.compare(password, user.password);
 
+  /*
   if (!isValid) {
     return new Response("Invalid email or password", { status: 401 });
+  }
+  */
+  if (!isValid) {
+    return NextResponse.redirect(
+      new URL("/login?error=invalid", req.url)
+    );
   }
 
   const token = jwt.sign(
