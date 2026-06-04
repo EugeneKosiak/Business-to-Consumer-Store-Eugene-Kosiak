@@ -5,11 +5,6 @@ import { prisma } from "@repo/db/prisma";
 
 const SECRET = process.env.JWT_SECRET || "user-secret-key";
 
-// Store hash password
-/* - Delete later
-const HASHED_PASSWORD =
-  "$2b$10$Uuw2CoflIqOEdQI/qBTKReTP6Ds6HMN0Cp981CCipiyoatYlVlwYy";
-*/
 // LOGIN
 export async function POST(req: Request) {
   const formData = await req.formData(); // read login form data

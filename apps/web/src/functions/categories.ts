@@ -1,5 +1,3 @@
-// import { posts, type Post } from "../components/data";
-
 export function categories<T>(
   products: { category: string; active: boolean }[],
 ): { name: string; count: number }[] {
