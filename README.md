@@ -234,8 +234,22 @@ apps/admin/.env:
 PASSWORD=admin123
 JWT_SECRET=super-secret-password
 
+---
+# Test credientials:
 
-## Running the project
+Customer Credentials:
+
+Username:  user@test.com
+
+Password: user123
+
+Admin Credentials:
+Username: admin@test.com
+
+Password: admin123
+
+
+## Running the project (setup - local)
 
 To run the project, run the following command in the root directory of your project:
 
@@ -247,6 +261,24 @@ This will run:
 
 - Client application at [http://localhost:3001](http://localhost:3001)
 - Admin application at [http://localhost:3002](http://localhost:3002)
+
+## Database Setup
+Run these once after setting your DATABASE_URL:
+
+1. Generate the Prisma client
+pnpm --filter @repo/db db:generate
+
+2. Push the Prisma schema to Neon (no migration files — fast for development)
+pnpm --filter @repo/db db:push
+
+3. Seed the database with categories, products, users, and a test order
+pnpm --filter @repo/db db:seed
+To use proper tracked migrations instead of db push:
+
+pnpm --filter @repo/db db:migrate:dev
+To open Prisma Studio (visual database browser):
+
+pnpm --filter @repo/db studio
 
 ## Running tests
 
@@ -263,6 +295,211 @@ For Playwright interface run:
 ## Project Structure
 
 This project is a monorepo with shared packages and applications.
+
+Business-to-Consumer-Store-Eugene-Kosiak/
+├── .github/
+│   └── workflows/
+│       └── grading.yml
+├── .turbo/
+├── .vscode/
+│   └── settings.json
+├── apps/
+│   ├── admin/
+│   │   ├── public/
+│   │   ├── src/
+│   │   │   ├── app/
+│   │   │   │   ├── api/
+│   │   │   │   │   ├── auth/
+│   │   │   │   │   │   └── route.ts
+│   │   │   │   │   ├── products/
+│   │   │   │   │   │   ├── [id]/
+│   │   │   │   │   │   │   └── route.ts
+│   │   │   │   │   │   ├── toggle/
+│   │   │   │   │   │   │   └── route.ts
+│   │   │   │   │   │   └── route.ts
+│   │   │   │   │   └── purchases/
+│   │   │   │   │       └── route.ts
+│   │   │   │   ├── components/
+│   │   │   │   │   ├── ProductForm.tsx
+│   │   │   │   │   ├── ProductList.tsx
+│   │   │   │   │   └── PurchaseList.tsx
+│   │   │   │   ├── fonts/
+│   │   │   │   ├── product/
+│   │   │   │   │   └── [urlId]/
+│   │   │   │   │       └── page.tsx
+│   │   │   │   ├── products/
+│   │   │   │   │   └── create/
+│   │   │   │   │       └── page.tsx
+│   │   │   │   ├── purchases/
+│   │   │   │   ├── favicon.ico
+│   │   │   │   ├── globals.css
+│   │   │   │   ├── layout.tsx
+│   │   │   │   ├── page.module.css
+│   │   │   │   ├── page.tsx
+│   │   │   │   └── toggleButton.tsx
+│   │   │   └── utils/
+│   │   ├── .env
+│   │   ├── .gitignore
+│   │   ├── eslint.config.js
+│   │   ├── global.d.ts
+│   │   ├── next-env.d.ts
+│   │   ├── next.config.js
+│   │   ├── package.json
+│   │   ├── postcss.config.mjs
+│   │   ├── README.md
+│   │   ├── tailwind.config.ts
+│   │   └── tsconfig.json
+│   │
+│   └── web/
+│       ├── public/
+│       ├── src/
+│       │   ├── app/
+│       │   │   ├── api/
+│       │   │   │   ├── auth/
+│       │   │   │   │   ├── me/
+│       │   │   │   │   │   └── route.ts
+│       │   │   │   │   └── route.ts
+│       │   │   │   ├── create-checkout-session/
+│       │   │   │   │   └── route.ts
+│       │   │   │   ├── products/
+│       │   │   │   │   └── [urlId]/
+│       │   │   │   │       └── route.ts
+│       │   │   │   ├── purchase/
+│       │   │   │   │   └── route.ts
+│       │   │   │   ├── purchase-from-stripe/
+│       │   │   │   │   └── route.ts
+│       │   │   │   └── register/
+│       │   │   │       └── route.ts
+│       │   │   ├── cart/
+│       │   │   │   └── page.tsx
+│       │   │   ├── category/
+│       │   │   │   └── [name]/
+│       │   │   │       └── page.tsx
+│       │   │   ├── login/
+│       │   │   │   └── page.tsx
+│       │   │   ├── product/
+│       │   │   │   └── [urlId]/
+│       │   │   │       └── page.tsx
+│       │   │   ├── purchases/
+│       │   │   │   └── page.tsx
+│       │   │   ├── register/
+│       │   │   │   └── page.tsx
+│       │   │   ├── search/
+│       │   │   │   └── page.tsx
+│       │   │   ├── success/
+│       │   │   │   └── page.tsx
+│       │   │   ├── tags/
+│       │   │   ├── favicon.ico
+│       │   │   ├── globals.css
+│       │   │   ├── layout.tsx
+│       │   │   ├── page.module.css
+│       │   │   └── page.tsx
+│       │   ├── components/
+│       │   │   ├── Auth/
+│       │   │   │   └── LogoutButton.tsx
+│       │   │   ├── Cart/
+│       │   │   │   └── CartContext.tsx
+│       │   │   ├── Layout/
+│       │   │   ├── Menu/
+│       │   │   │   ├── CategoryList.tsx
+│       │   │   │   ├── LeftMenu.tsx
+│       │   │   │   ├── LinkList.tsx
+│       │   │   │   ├── SummaryItem.tsx
+│       │   │   │   └── TagList.tsx
+│       │   │   ├── Themes/
+│       │   │   ├── Content.tsx
+│       │   │   ├── Main.tsx
+│       │   │   └── SearchBox.tsx
+│       │   ├── functions/
+│       │   │   ├── categories.ts
+│       │   │   └── tags.ts
+│       │   ├── mocks/
+│       │   └── types/
+│       ├── .env
+│       ├── .gitignore
+│       ├── eslint.config.js
+│       ├── global.d.ts
+│       ├── next-env.d.ts
+│       ├── next.config.js
+│       ├── package.json
+│       ├── postcss.config.mjs
+│       ├── README.md
+│       ├── tailwind.config.ts
+│       ├── tsconfig.json
+│       ├── vitest.setup.ts
+│       └── vitest.workspace.ts
+│
+├── packages/
+│   ├── db/
+│   │   ├── prisma/
+│   │   │   ├── migrations/
+│   │   │   │   └── 20260605063704_init/
+│   │   │   │       └── migration.sql
+│   │   │   ├── dev.db
+│   │   │   └── schema.prisma
+│   │   ├── src/
+│   │   │   ├── client.js
+│   │   │   ├── client.ts
+│   │   │   ├── data.ts
+│   │   │   ├── index.js
+│   │   │   ├── index.ts
+│   │   │   ├── prisma.ts
+│   │   │   ├── seed.js
+│   │   │   └── seed.ts
+│   │   ├── .env
+│   │   ├── .gitignore
+│   │   ├── eslint.config.mjs
+│   │   ├── package.json
+│   │   ├── README.md
+│   │   └── tsconfig.json
+│   │
+│   ├── env/
+│   ├── eslint-config/
+│   ├── tailwind-config/
+│   ├── typescript-config/
+│   ├── ui/
+│   └── utils/
+│
+├── tests/
+│   └── playwright/
+│       ├── tests/
+│       │   ├── admin/
+│       │   │   ├── fixtures.ts
+│       │   │   ├── home-screen.spec.ts
+│       │   │   ├── list-screen.spec.ts
+│       │   │   ├── purchase-screen.spec.ts
+│       │   │   └── update-screen.spec.ts
+│       │   └── web/
+│       │       ├── cart-screen.spec.ts
+│       │       ├── category-screen.spec.ts
+│       │       ├── detail-screen.spec.ts
+│       │       ├── fixtures.ts
+│       │       ├── home-screen.spec.ts
+│       │       ├── purchases-screen.spec.ts
+│       │       ├── register-screen.spec.ts
+│       │       ├── search-screen.spec.ts
+│       │       └── tags-screen.spec.ts
+│       ├── auth.setup.ts
+│       ├── package.json
+│       ├── playwright.config.ts
+│       └── tsconfig.json
+│
+├── storybook/
+│   ├── .storybook/
+│   ├── stories/
+│   ├── package.json
+│   ├── postcss.config.mjs
+│   └── tsconfig.json
+│
+├── API Documentation.md
+├── README.md
+├── package.json
+├── pnpm-lock.yaml
+├── pnpm-workspace.yaml
+├── turbo.json
+├── .gitignore
+├── .npmrc
+└── .prettierrc
 
 ### Applications
 
