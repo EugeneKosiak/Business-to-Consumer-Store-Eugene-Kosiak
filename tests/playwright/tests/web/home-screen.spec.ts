@@ -2,6 +2,8 @@ import { seed } from "@repo/db/seed";
 import { expect, test, type Page } from "./fixtures";
 
 test.describe("HOME SCREEN", () => {
+
+  // Helper function to validate category links on the home page
   async function checkCategory(
     page: Page,
     name: string,
@@ -26,6 +28,7 @@ test.describe("HOME SCREEN", () => {
     async ({ page }) => {
       await page.goto("/");
 
+      // Ensures all active products are rendered on the home page
       await expect(page.getByTestId("b2c-1")).toBeVisible();
       await expect(page.getByTestId("b2c-2")).toBeVisible();
       await expect(page.getByTestId("b2c-3")).toBeVisible();
@@ -41,6 +44,7 @@ test.describe("HOME SCREEN", () => {
     async ({ page }) => {
       await page.goto("/");
 
+      // Validates category navigation links and product counts per category
       await checkCategory(
         page,
         "Electronics",
@@ -72,6 +76,7 @@ test.describe("HOME SCREEN", () => {
     async ({ page }) => {
       await page.goto("/");
 
+      // Ensures cart navigation link exists and points to correct route
       const cartLink = page.getByRole("link", {
         name: /cart/i,
       });
@@ -89,6 +94,7 @@ test.describe("HOME SCREEN", () => {
     async ({ page }) => {
       await page.goto("/");
 
+      // Checks current theme and toggles between dark/light mode
       const html = await page.getAttribute("html", "data-theme");
 
       if (html === "dark") {
@@ -115,6 +121,7 @@ test.describe("HOME SCREEN", () => {
     async ({ page }) => {
       await page.goto("/");
 
+      // Verifies search input correctly redirects to search results page
       await page.getByPlaceholder("Search").fill("headphones");
 
       await expect(page).toHaveURL("/search?q=headphones");

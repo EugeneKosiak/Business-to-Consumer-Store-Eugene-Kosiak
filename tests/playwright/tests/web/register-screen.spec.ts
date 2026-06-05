@@ -3,6 +3,7 @@ import { expect, test } from "./fixtures";
 test.describe("REGISTER SCREEN", () => {
 
   test.beforeEach(async ({ page }) => {
+    // Reset seed before each test to ensure consistent user state
     await page.goto("/api/seed");
   });
 
@@ -14,23 +15,16 @@ test.describe("REGISTER SCREEN", () => {
     async ({ page }) => {
       await page.goto("/register");
 
+      // Ensure registration form UI renders correctly
       await expect(
         page.getByRole("heading", {
           name: /create account/i,
         })
       ).toBeVisible();
 
-      await expect(
-        page.getByPlaceholder("Enter name")
-      ).toBeVisible();
-
-      await expect(
-        page.getByPlaceholder("Enter email")
-      ).toBeVisible();
-
-      await expect(
-        page.getByPlaceholder("Enter password")
-      ).toBeVisible();
+      await expect(page.getByPlaceholder("Enter name")).toBeVisible();
+      await expect(page.getByPlaceholder("Enter email")).toBeVisible();
+      await expect(page.getByPlaceholder("Enter password")).toBeVisible();
 
       await expect(
         page.getByRole("button", {
@@ -48,32 +42,19 @@ test.describe("REGISTER SCREEN", () => {
     async ({ page }) => {
       await page.goto("/register");
 
-      await page
-        .getByPlaceholder("Enter name")
-        .fill("Eugene");
+      // Fill out registration form with valid data
+      await page.getByPlaceholder("Enter name").fill("Eugene");
+      await page.getByPlaceholder("Enter email").fill("eugene@test.com");
+      await page.getByPlaceholder("Enter password").fill("test");
 
-      await page
-        .getByPlaceholder("Enter email")
-        .fill("eugene@test.com");
+      await page.getByRole("button", {
+        name: /register/i,
+      }).click();
 
-      await page
-        .getByPlaceholder("Enter password")
-        .fill("test");
-
-      await page
-        .getByRole("button", {
-          name: /register/i,
-        })
-        .click();
-
-      await expect(page).toHaveURL(
-        /success=true/
-      );
-
+      // Verify successful registration flow
+      await expect(page).toHaveURL(/success=true/);
       await expect(
-        page.getByText(
-          /account created successfully/i
-        )
+        page.getByText(/account created successfully/i)
       ).toBeVisible();
     },
   );
@@ -86,34 +67,18 @@ test.describe("REGISTER SCREEN", () => {
     async ({ page }) => {
       await page.goto("/register");
 
-      // Existing seeded user
-      await page
-        .getByPlaceholder("Enter name")
-        .fill("Existing User");
+      // Attempt registration using existing seeded user
+      await page.getByPlaceholder("Enter name").fill("Existing User");
+      await page.getByPlaceholder("Enter email").fill("user@test.com");
+      await page.getByPlaceholder("Enter password").fill("test");
 
-      await page
-        .getByPlaceholder("Enter email")
-        .fill("user@test.com");
+      await page.getByRole("button", {
+        name: /register/i,
+      }).click();
 
-      await page
-        .getByPlaceholder("Enter password")
-        .fill("test");
-
-      await page
-        .getByRole("button", {
-          name: /register/i,
-        })
-        .click();
-
-      await expect(page).toHaveURL(
-        /error=exists/
-      );
-
-      await expect(
-        page.getByText(
-          /already exists/i
-        )
-      ).toBeVisible();
+      // Expect error state for duplicate user
+      await expect(page).toHaveURL(/error=exists/);
+      await expect(page.getByText(/already exists/i)).toBeVisible();
     },
   );
 
@@ -123,56 +88,36 @@ test.describe("REGISTER SCREEN", () => {
       tag: "@a1",
     },
     async ({ page }) => {
-      // Register
+
+      // Step 1: Register new user
       await page.goto("/register");
 
-      await page
-        .getByPlaceholder("Enter name")
-        .fill("Eugene");
+      await page.getByPlaceholder("Enter name").fill("Eugene");
+      await page.getByPlaceholder("Enter email").fill("newuser@test.com");
+      await page.getByPlaceholder("Enter password").fill("test");
 
-      await page
-        .getByPlaceholder("Enter email")
-        .fill("newuser@test.com");
-
-      await page
-        .getByPlaceholder("Enter password")
-        .fill("test");
-
-      await page
-        .getByRole("button", {
-          name: /register/i,
-        })
-        .click();
+      await page.getByRole("button", {
+        name: /register/i,
+      }).click();
 
       await expect(
-        page.getByText(
-          /account created successfully/i
-        )
+        page.getByText(/account created successfully/i)
       ).toBeVisible();
 
-      // Login
+      // Step 2: Login with newly created account
       await page.goto("/login");
 
-      await page
-        .getByPlaceholder("Enter email")
-        .fill("newuser@test.com");
+      await page.getByPlaceholder("Enter email").fill("newuser@test.com");
+      await page.getByPlaceholder("Enter password").fill("test");
 
-      await page
-        .getByPlaceholder("Enter password")
-        .fill("test");
-
-      await page
-        .getByRole("button", {
-          name: /login/i,
-        })
-        .click();
+      await page.getByRole("button", {
+        name: /login/i,
+      }).click();
 
       await page.waitForURL("/");
 
-      // Greeting
-      await expect(
-        page.getByText("Hi Eugene")
-      ).toBeVisible();
+      // Verify login success greeting
+      await expect(page.getByText("Hi Eugene")).toBeVisible();
     },
   );
 
@@ -184,16 +129,12 @@ test.describe("REGISTER SCREEN", () => {
     async ({ page }) => {
       await page.goto("/register");
 
-      await page
-        .getByRole("button", {
-          name: /register/i,
-        })
-        .click();
+      // Attempt submit with empty fields (browser validation expected)
+      await page.getByRole("button", {
+        name: /register/i,
+      }).click();
 
-      // Browser validation stops submit
-      await expect(page).toHaveURL(
-        /register/
-      );
+      await expect(page).toHaveURL(/register/);
     },
   );
 });

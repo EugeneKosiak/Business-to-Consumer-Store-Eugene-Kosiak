@@ -2,7 +2,9 @@ import { seed } from "@repo/db/seed";
 import { expect, test } from "./fixtures";
 
 test.describe("CATEGORY SCREEN", () => {
+
   test.beforeAll(async () => {
+    // Seed database once before running category tests
     await seed();
   });
 
@@ -12,16 +14,20 @@ test.describe("CATEGORY SCREEN", () => {
       tag: "@a1",
     },
     async ({ page }) => {
+      // Navigate to electronics category page
       await page.goto("/category/electronics");
 
-      // CATEGORY SCREEN > Displays products based on category from URL
-
+      // Select all product cards in this category
       const products = page.locator('[data-test-id^="b2c-"]');
+
+      // Should only show 2 products in this category
       await expect(products).toHaveCount(2);
 
+      // Verify specific products are visible
       await expect(page.getByTestId("b2c-1")).toBeVisible(); // Wireless Headphones
       await expect(page.getByTestId("b2c-3")).toBeVisible(); // Smart Watch Pro
 
+      // Ensure unrelated product is not shown
       await expect(page.getByTestId("b2c-2")).not.toBeVisible();
     },
   );
@@ -32,13 +38,16 @@ test.describe("CATEGORY SCREEN", () => {
       tag: "@a1",
     },
     async ({ page }) => {
+      // Navigate to gaming category page
       await page.goto("/category/gaming");
 
-      // CATEGORY SCREEN > Displays only gaming products
-
+      // Select all product cards in this category
       const products = page.locator('[data-test-id^="b2c-"]');
+
+      // Should only show 1 gaming product
       await expect(products).toHaveCount(1);
 
+      // Verify gaming product is visible
       await expect(page.getByTestId("b2c-2")).toBeVisible(); // RGB Keyboard
     },
   );
@@ -49,13 +58,14 @@ test.describe("CATEGORY SCREEN", () => {
       tag: "@a1",
     },
     async ({ page }) => {
+      // Navigate to non-existent category
       await page.goto("/category/abc");
 
-      // CATEGORY SCREEN > Displays empty state when no products match
-
+      // No products should be found
       const products = page.locator('[data-test-id^="b2c-"]');
       await expect(products).toHaveCount(0);
 
+      // Show empty state message
       await expect(page.getByText("0 Products")).toBeVisible();
     },
   );
