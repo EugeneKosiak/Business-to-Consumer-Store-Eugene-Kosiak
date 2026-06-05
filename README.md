@@ -1,141 +1,194 @@
-# Assignment 2 - Blog - Client App
+# Assignment 2 - B2C Store Application
 
-The goal of this assignment is to implement all the client side functionality.
-Example implementation is in the image below.
+The goal of this assignment is to design and develop a fully functional **Business-to-Consumer (B2C) Store application** that allows users to browse products, manage a shopping cart, and complete purchases, while administrators manage products and view purchase records.
+
+The application builds on an existing monorepo structure from WSU Blog Post (Assignments 2.1, 2.2, 2.3) and extends it with full e-commerce functionality.
 
 ## Success Criteria
 
 - ✅ All of the tests must be passing
+- ✅ All existing functionality must remain working
 - ✅ You must be able to explain any code in the codebase
+- ✅ Database is fully integrated with Prisma and seeded correctly
+- ✅ Admin and user flows work end-to-end (auth, cart, purchase, CRUD)
 
-## 👾 Requirements - Assignment 2.1 - Client
+---
 
-> 💡Idea! Create a new issue in your repository, where you can track the completion of these items. Just copy paste them into the issue and mark them as complete as you go. Make sure you copy the source from README.md not the preview text.
+## 👾 Requirements - Assignment 2.1 - Client (Storefront)
 
 ### HOME SCREEN
 
-- [ ] User must see only the "active" posts
-- [ ] User must see the list of blog post categories, where each category points to UI showing only posts of that category
-- [ ] User must see the list of blog post tags, where each tag points to UI showing only posts of that category
-- [ ] User must see the history of blog posts, showing month and year, where each moth, year tuple points to UI showing only posts of that category
-- [ ] Tags and history items shown are only considered from active posts
-- [ ] The list shows the following items:
-  - blog title, pointing to detail page
-  - short description
-  - date
+- [ ] User must see all active products
+- [ ] User must see product categories with navigation links
+- [ ] User must be able to navigate to category pages (e.g. /category/electronics)
+- [ ] User must see a cart navigation link
+- [ ] User must be able to toggle dark and light mode using `data-theme` on `<html>`
+- [ ] User must be able to search products via search input (redirects to `/search?q=`)
+- [ ] Search filters products by title and/or description
+
+### PRODUCT LIST / FILTERING
+
+- [ ] User must see a list of products rendered as cards (`article`)
+- [ ] Each product card includes:
+  - title
   - image
+  - description snippet
   - tags
-  - likes
-  - views
-- [ ] User must be able to switch between dark and light theme with a button
-      The dark theme setting is stored in the "data-theme" attribute on html element
-- [ ] There is a search functionality that filters blogs based on string found in title or description, redirecting to search page
+  - category
+  - active status
+- [ ] User must be able to filter products by:
+  - content/title
+  - tags
+  - category (via URL)
+  - date created
+- [ ] Filters must be combinable
+- [ ] User must be able to sort products by:
+  - title (asc/desc)
+  - date (asc/desc)
 
 ### DETAIL SCREEN
 
-- [ ] Detail page shows the same items as list item, but the short description is replaced by formatted long description
-- [ ] Detail text is stored as Markdown, which needs to be converted to HTML
+- [ ] Product detail page shows full product information
+- [ ] Product markdown content is rendered correctly
+- [ ] User can add product to cart
+- [ ] Product price, image, description, and features are visible
 
 ### CATEGORY SCREEN
 
-- [ ] Displays posts from the category from url (e.g. /category/react)
-- [ ] Displays "0 Posts" when search does no posts have that category
-
-### HISTORY SCREEN
-
-- [ ] Displays posts from year and month specified in the url (e.g. /history/2024/12)
-- [ ] Displays "0 Posts" when no posts are from that given month and year
+- [ ] Displays products filtered by category from URL
+- [ ] Shows "0 Products" when category has no matches
 
 ### TAG SCREEN
 
-- [ ] Displays posts with the tag url (e.g. /tags/dev-tools)
-- [ ] Displays "0 Posts" when search does no posts have that tag
+- [ ] Displays products filtered by tag from URL
+- [ ] Shows "0 Products" when no products match tag
 
 ### SEARCH SCREEN
 
-- [ ] Displays results based on search string stored in the query string (e.g. /search?q=Fat)
-- [ ] Displays "0 Posts" when search does not find anything
+- [ ] Displays search results based on query string (`/search?q=`)
+- [ ] Shows "0 Products" when no matches are found
+
+### CART SCREEN
+
+- [ ] User can add products to cart from detail page
+- [ ] User can remove products from cart
+- [ ] User can increase/decrease quantity
+- [ ] Cart displays:
+  - product name
+  - price per item
+  - quantity
+  - total price
+- [ ] Cart prevents exceeding stock limits
+- [ ] Cart shows warning when max quantity is reached
+- [ ] User can proceed to checkout
+- [ ] Checkout triggers mock Stripe flow and success page
+
+### PURCHASE FLOW
+
+- [ ] Successful checkout creates a purchase record
+- [ ] Purchase displays:
+  - product names
+  - images
+  - quantity
+  - totals
+- [ ] User can view purchase history in `/purchases`
+- [ ] User can remove purchase entries
+
+---
 
 ## 👾 Requirements - Assignment 2.2 - Admin
 
-> 💡Idea! Create a new issue in your repository, where you can track the completion of these items. Just copy paste them into the issue and mark them as complete as you go. Make sure you copy the source from README.md not the preview text.
-
 ### ADMIN HOME SCREEN
 
-- [ ] Shows Login screen if not logged
-- [ ] Shows List screen if logged
-- [ ] There must be a logout button
-- [ ] Clicking the logout button logs the user out
-- [ ] Authenticate the current client using a hard-coded password
-- [ ] Use a httpOnly cookie and name it "auth_token" to remember the signed-in state.
+- [ ] Shows login screen when unauthenticated
+- [ ] Shows dashboard when authenticated
+- [ ] Uses `auth_token` httpOnly cookie
+- [ ] Login uses hardcoded credentials validated on server
+- [ ] Logout clears session and redirects to login
 
 ### ADMIN LIST SCREEN
 
-- [ ] Shows both active and inactive posts
-- [ ] Article list is only accessible to logged-in users.
-- [ ] There is a filter screen that allows filtering posts by:
-  - [ ] Title or content
-  - [ ] Tags
-  - [ ] Date
-  - [ ] Visibility
-- [ ] You can combine multiple filters
-- [ ] Users can sort posts by name or creation date, both ascending and descending
-- [ ] The post list displays a list of filtered items with the following information:
-  - [ ] The list post item displays the image, title of the post
-  - [ ] The list post items display metadata such as category, tags, and "active" status.
-  - [ ] The active status is a button that, on click, just displays a message
-- [ ] Clicking on the title takes the user to the MODIFY SCREEN, allowing the user to modify the current post
-- [ ] There is a button to create new posts
-- [ ] Clicking on the "Create Post" button takes the user to the CREATE SCREEN
+- [ ] Displays all products (active and inactive)
+- [ ] Products render as cards (`article`)
+- [ ] Admin can filter by:
+  - title/content
+  - tags
+  - category
+  - date created
+- [ ] Filters can be combined
+- [ ] Admin can sort by:
+  - title
+  - date
+- [ ] Each product shows:
+  - image
+  - title
+  - category
+  - tags
+  - active status
+- [ ] Admin can toggle active status
+- [ ] Admin can delete products (with confirmation modal)
+- [ ] Admin can navigate to:
+  - create product screen
+  - edit product screen
 
-### ADMIN CREATE and UPDATE screen
+### ADMIN CREATE & UPDATE SCREEN
 
-Both create and update screens display the same UI, but the update screen preloads the data into fields.
+- [ ] Pages are protected (auth required)
+- [ ] Fields include:
+  - Title
+  - Description
+  - Content (Markdown)
+  - Image URL
+  - Tags
+  - Category
+  - Brand
+- [ ] All fields must be validated
+- [ ] Save shows success or error messages
+- [ ] Update form preloads existing product data
+- [ ] Create form adds new product to database
+- [ ] Image preview is shown from URL
+- [ ] Markdown content renders correctly
 
-- [ ] Page is only accessible to logged in user
-- [ ] There must be the following fields which must be validated for errors:
-  - [ ] Title (`input, string`)
-  - [ ] Description (textarea, string, max 200 characters)
-  - [ ] Content (`textarea, markdown string`)
-  - [ ] Tag List (`input, string`) shows a comma-separated list of tags.
-  - [ ] Image URL (`input, URL`)
-- [ ] Under the Description is a "Preview" button that replaces the text area with a rendered markdown string and changes the title to "Close Preview".
-- [ ] When the preview is closed, the cursor must be in the same position as before opening the preview.
-- [ ] Under the image input is an image preview.
-- [ ] User can click on the "Save" button that displays an error ui if one of the fields is not specified or valid.
+---
 
-## 👾 Requirements: Assignment 2.3
+## 👾 Requirements - Assignment 2.3 (Backend Integration)
 
-### BACKEND / CLIENT
+### BACKEND / STORE LOGIC
 
-- [ ] Data is loaded from the database backend
-- [ ] Data filtering is done server side and only filtered data is sent to client
-- [ ] Each visit of the page increases the post "views" count by one
-- [ ] User can "like" the post on the detail screen, NOT on the list screen (hint, create the `/api/likes/route.ts` route and implement the needed handlers)
-- [ ] Liking the post increases the like count by one
-- [ ] User can like the post only once (use IP)
-- [ ] User can unlike the post, decreasing the like post by one
+- [ ] All products are loaded from database (Prisma/PostgreSQL)
+- [ ] Filtering is performed server-side
+- [ ] Each product view increases view count
+- [ ] Product ratings and stock are persisted
+- [ ] Cart state is reflected in backend during checkout
+- [ ] Purchase records are stored in database
 
-### BACKEND / ADMIN / AUTHORISATION
+### BACKEND / CART & CHECKOUT
 
-> For these two requirements we do not have End 2 End tests and will be checked manually.
+- [ ] Products can be added to cart
+- [ ] Cart persists per user session
+- [ ] Checkout creates purchase via API
+- [ ] Stripe flow is mocked for testing
+- [ ] Stock is respected and enforced
 
-- [ ] The password is checked on server in the `/api/auth` route
-- [ ] The POST method is used for login
-- [ ] The DELETE method is used for logout
-- [ ] The admin home page checks for the presence of JWT token and verifies it, if the token does not exist or is invalid, displays the login control.
+### BACKEND / PURCHASES
 
-### BACKEND / ADMIN / LIST SCREEN
+- [ ] Purchase history is stored in relational schema:
+  - User → Purchase → PurchaseItem
+- [ ] Users can fetch purchase history
+- [ ] Users can delete purchase records
+- [ ] Error handling works for failed API calls
 
-- [ ] Logged in user can activate / deactivate a post clicking on the activate button, automatically saving changes
+---
 
-### BACKEND / ADMIN / UPDATE SCREEN
+## 👾 ADMIN AUTHENTICATION
 
-- [ ] Logged in user can save changes to database, if the form is validated
+- [ ] Login uses POST `/api/auth`
+- [ ] Logout uses DELETE `/api/auth`
+- [ ] Password is verified server-side
+- [ ] JWT stored in `auth_token` cookie
+- [ ] Protected routes redirect to login when unauthenticated
 
-### BACKEND / ADMIN / CREATE SCREEN
-
-- [ ] Logged in user can create a new post to the database, if the form is validated
+---
 
 ## Prerequisites
 
@@ -152,10 +205,10 @@ pnpm add -g turbo
 Once the pnpm is installed, in the root of the project install the packages
 
 ```
-pnpm i
+pnpm i or pnpm install
 ```
 
-To run end to end tests you need to install headless browsers. Please run the following command in the `tests/playwright-web` directory
+To run end to end tests you need to install headless browsers. Please run the following command in the `tests/playwright` directory
 
 ```
 pnpx playwright install
@@ -180,81 +233,66 @@ This will run:
 
 ## Running tests
 
-To run the tests please run, you have two options.
+To run the tests please run the following in the tests/playwright folder:
+- pnpm playwright test --grep @a1
+- pnpm playwright test --grep @a2
+- pnpm playwright test --grep @a3
 
-### Running Tests in Console
+For Playwright interface run:
+- pnpm playwright test --grep @a1 --ui
+- pnpm playwright test --grep @a2 --ui
+- pnpm playwright test --grep @a3 --ui
 
-If you only wish to visualise the test results in console, please run the following command in the root of your project for the first part of the second assignment (i.e. Assignment 2.1):
+## Project Structure
 
-```
-turbo test-1
-```
+This project is a monorepo with shared packages and applications.
 
-This launches the turbo console UI similar to below, where you can swap between different projects:
+### Applications
 
-![Turbo UI](https://skillpies.s3.ap-southeast-2.amazonaws.com/courses/full-stack-development/sections/assignment-2-1-blog-client-in-advanced-react/Screenshot%202025-02-05%20at%2014.30.45.png)
+- apps/web → Customer-facing B2C store  
+- apps/admin → Admin dashboard  
 
-> ⚠️⚠️ Make sure that ALL tests pass!
+### Packages
 
-If you want to run the tests for second part (i.e. Assignment 2.2) or third part (i.e. Assignment 2.3), run these commands:
+- packages/db → Prisma client, schema, seed data  
+- packages/ui → Shared UI components  
+- packages/utils → Shared utilities  
+- packages/eslint-config → ESLint configuration  
+- packages/tailwind-config → Tailwind configuration  
+- packages/typescript-config → TypeScript configuration  
 
-```
-turbo test-2 // or
-turbo test-3
-```
+### Tests
 
-If you want to run all tests, please run
+- tests/playwright-web → Customer flow tests  
+- tests/playwright-admin → Admin flow tests  
 
-```
-turbo all:test
-```
+---
 
-### Running Tests in UIs
+## Database Schema
 
-The packaged tests framework also have the possibility of visually represent your tests for nicer view of test results. To see the UIs, run this command instead of `turbo test-1`:
+Uses Prisma with PostgreSQL.
 
-```
-turbo dev:test-1
-```
+Core models:
 
-This will launch the End to End testing framework Playwright's test UI similar to below, please use the Play buttons to run individual tests:
+- User → admin/customer authentication  
+- Product → catalog items  
+- Purchase → order records  
+- PurchaseItem → line items  
 
-![Playwright UI](https://skillpies.s3.ap-southeast-2.amazonaws.com/courses/full-stack-development/sections/assignment-2-1-blog-client-in-advanced-react/Screenshot%202025-02-05%20at%2014.40.35.png)
+---
 
-It also launches the unit and integration test framework Vitest's UI, similar to below. Here, you can also use the play buttons to execute individual tests!
+## Application Notes
 
-![Vitest UI](https://skillpies.s3.ap-southeast-2.amazonaws.com/courses/full-stack-development/sections/assignment-2-1-blog-client-in-advanced-react/Screenshot%202025-02-05%20at%2014.46.31.png)
+- Authentication uses JWT stored in httpOnly cookies  
+- Products are seeded from `db/src/seed.ts`  
+- Cart is session-based with backend validation  
+- Purchases are persisted and linked to users  
+- Admin features include full product CRUD + filtering  
 
-## Project structure
+---
 
-The project is monorepo with the following packages split into three categories:
+## Final Notes
 
-**Applications**
-
-Contains the following web applications:
-
-- **apps/admin** - Admin Website
-- **apps/web** - Client website
-
-**Packages**
-
-Contains the following packages with shared code and configurations:
-
-- **packages/ui** - Library of UI elements shared between admin and client
-- **packages/utils** - Library of utility functions shared between other projects
-- **packages/db** - Library handling the database connection
-- **packages/eslint-config**, **packages/tailwind-config** and **packages/typescript-config** contain configuration files for build pipelines for this project
-
-**Tests**
-
-Contains the following test applications:
-
-- **tests/playwright-admin** - End to End tests for the admin application
-- **tests/playwright-web** - End to End tests for the client application
-- **tests/storybook** - Configured storybook instance for development and testing of React components in isolation
-
-## Application Structure
-
-The client application comes with pre-defined router (only one route is missing for your learning).
-The client application also comes with pre defined structure of components and utilities for you to complete.
-Tha admin application is much more bare with most functionality AND structure needed to be completed by you.
+- All functionality is validated using Playwright E2E tests  
+- The system is designed as a full-stack e-commerce application  
+- Both admin and client systems share the same database layer  
