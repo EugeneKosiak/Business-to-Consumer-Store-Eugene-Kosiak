@@ -44,6 +44,11 @@ export function Main({
                     {product.category}
                   </p>
 
+                  {/* Price */}
+                  <p className="text-lg font-bold text-primary mb-2">
+                    ${product.price.toFixed(2)}
+                  </p>
+
                   <div className="flex items-center gap-4 mb-3">
                     <div className="flex items-center gap-1">
                       <span className="text-yellow-500">⭐</span>
