@@ -25,7 +25,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Full-Stack Store",
+  title: "B2C Store",
   description: "B2C Store Application",
 };
 
