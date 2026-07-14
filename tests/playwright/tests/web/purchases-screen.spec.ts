@@ -158,4 +158,62 @@ test.describe("PURCHASES SCREEN", () => {
       await expect(page.getByText("Failed to remove purchase")).toBeVisible();
     }
   );
+
+  test(
+    "Product Stock Updates After Purchase",
+    {
+      tag: "@a1",
+    },
+    async ({ page }) => {
+
+      // Open product page
+      await page.goto("/product/wireless-headphones");
+
+      // Read current stock text
+      const stockText = await page
+        .locator("span")
+        .filter({ hasText: /Stock/i })
+        .textContent();
+
+      // Extract stock number
+      const startingStock = Number(
+        stockText?.match(/\d+/)?.[0]
+      );
+
+      // Create purchase through API
+      const response = await page.request.post(
+        "/api/purchase",
+        {
+          data: {
+            cart: [
+              {
+                id: 1,
+                title: "Wireless Headphones",
+                price: 199,
+                quantity: 1,
+              },
+            ],
+          },
+        }
+      );
+
+      expect(response.ok()).toBeTruthy();
+
+      // Reload product page to fetch updated stock
+      await page.reload();
+
+      // Read updated stock
+      const updatedStockText = await page
+        .locator("span")
+        .filter({ hasText: /Stock/i })
+        .textContent();
+
+      const updatedStock = Number(
+        updatedStockText?.match(/\d+/)?.[0]
+      );
+
+      // Stock should decrease by one
+      expect(updatedStock).toBe(startingStock - 1);
+    }
+  );
 });

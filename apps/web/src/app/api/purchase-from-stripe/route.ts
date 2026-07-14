@@ -57,6 +57,7 @@ export async function POST(req: Request) {
     const lineItems = session.line_items?.data || [];
 
     // Create purchase row in purchase database with user ID, total price, and associated items
+    /*
     const purchase = await prisma.purchase.create({
       data: {
         userId: decoded.id, // specific user
@@ -83,8 +84,90 @@ export async function POST(req: Request) {
         },
       },
     });
+    */
+    // Create purchase row in purchase database with user ID, total price, and associated items
+    const purchase = await prisma.$transaction(async (tx) => {
 
-    return NextResponse.json(purchase);
+      // Update stock for each purchased product
+      for (const item of lineItems) {
+        // Read the original product ID that was stored in the
+        // Stripe Product metadata when the checkout session was created.
+        const productId = Number(
+          (item.price?.product as Stripe.Product)
+            ?.metadata?.productId ?? 1
+          );
+
+        // Stripe stores quantity separately. Default to 1 if no quantity is provided.
+        const quantity = item.quantity || 1;
+
+        // Retrieve the latest product information from the database.
+        const product = await tx.product.findUnique({
+          where: { id: productId },
+        });
+
+        if (!product) {
+          throw new Error("Product not found");
+        }
+
+        // Verify there is enough stock available before reducing it. If there isn't enough stock, the entire transaction is cancelled.
+        if (product.stock < quantity) {
+          throw new Error(
+            `${product.title} does not have enough stock`
+          );
+        }
+
+        // Reduce the available stock by the quantity purchased.
+        await tx.product.update({
+          where: {
+            id: productId,
+          },
+          data: {
+            stock: {
+              decrement: quantity,
+            },
+          },
+        });
+      }
+
+      // Once every stock update succeeds, create the purchase record.
+      return tx.purchase.create({
+        data: {
+          userId: decoded.id, // Save the authenticated user's ID
+
+          total: (session.amount_total || 0) / 100, // stripe stores money in cents. so convert to dollars
+
+          // Create a PurchaseItem record for every Stripe line item.
+          items: {
+            create: lineItems.map((item: any) => ({
+
+              // Save the original product ID from Stripe metadata.
+              productId: Number(
+                (item.price?.product as Stripe.Product)
+                  ?.metadata?.productId ?? 1
+              ),
+
+              // Save the product image that was stored in Stripe metadata.
+              imageUrl:
+                (item.price?.product as Stripe.Product)
+                  ?.metadata?.imageUrl || "",
+
+              // Save the product title shown during checkout.
+              title: item.description || "Unknown Product",
+
+              // Stripe stores prices in cents, so convert them back to dollars.
+              price: (item.price?.unit_amount || 0) / 100,
+
+              // Save the quantity purchased.
+              quantity: item.quantity || 1,
+            })),
+          },
+        },
+      });
+    });
+  
+  // Return completed purchase
+  return NextResponse.json(purchase);
+
   } catch (err) {
     console.error(err);
 

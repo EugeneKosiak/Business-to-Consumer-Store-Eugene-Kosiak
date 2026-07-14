@@ -118,42 +118,91 @@ export async function POST(req: Request) {
       0
     );
 
-    // Create purchase in database
-    const purchase = await prisma.purchase.create({
-      data: {
-        userId, // link purchase to user
-        total,  // store total cost
+    /* 
+      Create purchase and update stock in one database transaction 
+      Using a transaction ensures that either ALL stock updates and the
+      purchase are saved together, or nothing is saved if an error occurs.
+    */
+    const purchase = await prisma.$transaction(async (tx) => {
+    
+      // Update stock for every purchased product
+      for (const item of cart) {
 
-        // Create purchase items linked to purchase
-        items: {
-          create: await Promise.all(
-            cart.map(async (item: any) => {
-              // Fetch product for image fallback
-              const product = await prisma.product.findUnique({
-                where: { id: item.id },
-              });
+        // Look up product in database
+        const product = await tx.product.findUnique({
+          where: { id: item.id },
+        });
 
-              return {
-                productId: item.id,
-                title: item.title,
-                price: item.price,
+        if (!product) {
+          throw new Error("Product not found");
+        }
 
-                // Use provided image or fallback to DB or empty string
-                imageUrl: item.imageUrl || product?.imageUrl || "",
+        /* 
+        Check that enough stock exists before allowing the purchase.
+        If there is insufficient stock, the transaction is cancelled
+        and no purchase or stock updates are saved.
+        */
+        if (product.stock < item.quantity) {
+          throw new Error(
+            `${product.title} does not have enough stock`
+          );
+        }
 
-                quantity: item.quantity,
-              };
-            })
-          ),
+        /*
+        Decrement stock for purchased product. 
+        This is done in the transaction so that if any part of the purchase fails, the stock is not updated.
+        */
+        await tx.product.update({
+          where: { id: item.id },
+          data: {
+            stock: {
+              decrement: item.quantity,
+            },
+          },
+        });
+      }
+
+      // Create purchase in database after every stock update succeeds.
+      return tx.purchase.create({
+        // Purchase Data
+        data: {
+          userId, // link purchase to user
+          total, // store total cost
+
+          // Create purchase items linked to purchase
+          items: {
+            create: await Promise.all(
+              // Convert each cart item into a PurchaseItem record
+              cart.map(async (item: any) => {
+                // Fetch product for image fallback
+                const product = await tx.product.findUnique({
+                  where: { id: item.id },
+                });
+
+                return {
+                  productId: item.id,  // Store which product was purchased
+                  title: item.title, // Save product title at the time of purchase
+                  price: item.price,  // Save purchase price
+
+                  // Use image supplied by cart, otherwise use the current database image, otherwise use an empty string.
+                  imageUrl:
+                    item.imageUrl || product?.imageUrl || "",
+
+                  quantity: item.quantity, // Save quantity purchased
+                };
+              })
+            ),
+          },
         },
-      },
 
-      // Return purchase with items included
-      include: { items: true },
+        // Return purchase with items included
+        include: { items: true },
+      });
     });
 
-    // Return created purchase
+    // Return created purchase as JSON response
     return Response.json(purchase);
+
   } catch (error) {
     // Log error
     console.error(error);

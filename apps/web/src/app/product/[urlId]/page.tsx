@@ -161,9 +161,13 @@ export default function Page({
               {product.stock > 10
                 ? "In Stock"
                 : product.stock > 0
-                ? `Low Stock (${product.stock})`
+                ? `Low Stock `
                 : "Out of Stock"}
             </span>
+
+            <p className="text-sm text-gray-600">
+              Available: <strong>{product.stock}</strong>
+            </p>
           </div>
 
           <p className="text-gray-600 leading-relaxed">

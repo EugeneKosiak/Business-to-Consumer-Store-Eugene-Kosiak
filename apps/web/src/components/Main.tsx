@@ -55,6 +55,10 @@ export function Main({
                       <span>{product.rating}/5</span>
                     </div>
                   </div>
+                  
+                  <p className="text-sm text-secondary mb-2">
+                    Stock: <span className="font-semibold">{product.stock}</span>
+                  </p>
 
                   <p
                     className="text-secondary mb-3"
