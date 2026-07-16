@@ -1,4 +1,4 @@
-export async function tags(products: { tags: string; active: boolean }[]) {
+export function tags(products: { tags: string; active: boolean }[]) {
   const map = new Map<string, number>(); // stores count for how many times a tag appears
 
   products
@@ -14,4 +14,3 @@ export async function tags(products: { tags: string; active: boolean }[]) {
     .map(([name, count]) => ({ name, count }))
     .sort((a, b) => a.name.localeCompare(b.name)); // sort alphabetically by tag name
 }
-

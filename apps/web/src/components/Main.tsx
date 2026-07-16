@@ -1,13 +1,49 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import type { Product } from "@prisma/client";
 import Link from "next/link";
 
 export function Main({
-  products,
+  products: initialProducts,
   className,
 }: {
   products: Product[];
   className?: string;
 }) {
+  // Store current products
+  const [products, setProducts] = useState(initialProducts);
+
+  useEffect(() => {
+    // Repeat every 1 second to check for updated products
+    const interval = setInterval(async () => {
+      try {
+        // Request the latest active products from the API
+        const res = await fetch("/api/products");
+
+        // Stop if the request failed
+        if (!res.ok) return;
+
+        // Convert the API response into a Product array
+        const latest = await res.json();
+
+        // Update state only if the products have changed
+        setProducts((current) => {
+          if (JSON.stringify(current) === JSON.stringify(latest)) {
+            return current; // Keep current state if nothing has changed
+          }
+
+          return latest; // Replace state with the latest products
+        });
+      } catch (err) {
+        // Log any errors from the fetch request
+        console.error(err);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval); // Clear the interval when the component is removed
+  }, []); // Run once when the component first loads
+
   return (
     <main className={className || ""}>
 

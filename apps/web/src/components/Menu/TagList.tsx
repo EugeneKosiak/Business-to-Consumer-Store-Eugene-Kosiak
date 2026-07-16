@@ -1,17 +1,56 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import type { Product } from "@prisma/client";
 import { tags } from "../../functions/tags";
 import { LinkList } from "./LinkList";
 import Link from "next/link";
 import { toUrlPath } from "@repo/utils/url";
 
-export async function TagList({
+export function TagList({
   selectedTag,
-  products,
+  products: initialProducts,
 }: {
   selectedTag?: string;
   products: Product[];
 }) {
-  const postTags = await tags(products);
+  // Store current tags
+  const [postTags, setPostTags] = useState(tags(initialProducts));
+
+  useEffect(() => {
+    // Repeat every 1 second to check for updated products
+    const interval = setInterval(async () => {
+      try {
+        // Request the latest active products from the API
+        const res = await fetch("/api/products");
+
+        if (!res.ok) return;  // Stop if the request failed
+
+        const latest: Product[] = await res.json(); // Convert the API response into a Product array
+        const latestTags = tags(latest); // Generate the latest tags from the updated products
+
+        // Update state only if the products have changed
+        setPostTags((current) => {
+          // Compare current products with the latest products
+          if (
+            JSON.stringify(current) ===
+            JSON.stringify(latestTags)
+          ) {
+            return current; // Keep current state if nothing has changed
+          }
+
+          // Replace state with the latest tags
+          return latestTags;
+        });
+      } catch (err) {
+        // Log any errors from the fetch request
+        console.error(err);
+      }
+    }, 1000);
+
+    // Clear the interval when the component unmounts to prevent memory leaks
+    return () => clearInterval(interval);
+  }, []); // Run once when the component first loads
 
   return (
     <LinkList title="Tags">

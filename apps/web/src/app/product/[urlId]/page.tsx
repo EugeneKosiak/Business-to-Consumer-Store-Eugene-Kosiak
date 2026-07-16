@@ -36,23 +36,29 @@ export default function Page({
   useEffect(() => {
     async function loadProduct() {
       try {
-        const res = await fetch(
-          `/api/products/${urlId}`
-        );
+        // Request the latest product data from the API
+        const res = await fetch(`/api/products/${urlId}`);
 
+        // Stop if the request failed
         if (res.ok) {
           const data = await res.json();
           setProduct(data);
         }
-      } catch (error) {
+      } catch (error) { // Log any errors from the fetch request
         console.error(error);
-      } finally {
+      } finally { // Set loading state to false after the request completes
         setLoading(false);
       }
     }
 
-    loadProduct();
-  }, [urlId]);
+    loadProduct(); // Load product data immediately when the component mounts
+
+    // Repeat every 1 second to check for updated product data
+    const interval = setInterval(loadProduct, 1000); 
+
+    // Clear the interval when the component is removed to prevent memory leaks
+    return () => clearInterval(interval);
+  }, [urlId]); // Run once when the component first loads and whenever urlId changes
 
   // Handle add to cart button click
   async function handleAddToCart() {
