@@ -1,7 +1,7 @@
 import { expect, test } from "vitest";
 import { tags } from "./tags";
 
-test("returns empty array if no posts are provides", async () => {
+test("returns empty array if no posts are provided", async () => {
   await expect(await tags([])).toEqual([]);
 });
 
@@ -23,13 +23,13 @@ test("returns tags with count", async () => {
   ]);
 });
 
-test("ignores empty tags", async()=>{
- expect(
-  tags([
-    {
-      tags:"",
-      active:true
-    }
-  ])
- ).toEqual([]);
+test("ignores empty tags", async () => {
+  await expect(
+    await tags([
+      {
+        tags: "",
+        active: true,
+      },
+    ]),
+  ).toEqual([]);
 });
