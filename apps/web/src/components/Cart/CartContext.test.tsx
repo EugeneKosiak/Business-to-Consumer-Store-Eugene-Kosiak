@@ -22,7 +22,7 @@ function TestComponent(){
 
   return (
     <div>
-      <p data-test-id="count">
+      <p data-testid="count">
         {cart.length}
       </p>
       <button
