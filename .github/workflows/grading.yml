@@ -158,8 +158,11 @@ jobs:
       - name: Autograding Reporter
         uses: education/autograding-grading-reporter@v1
         env:
+          TEST_UTILS_RESULTS: "${{steps.testUtils.outputs.result}}"
+          TEST_UI_RESULTS: "${{steps.testUi.outputs.result}}"
+          TEST_WEB_RESULTS: "${{steps.testWeb.outputs.result}}"
           NPM1_RESULTS: "${{steps.npm1.outputs.result}}"
           NPM2_RESULTS: "${{steps.npm2.outputs.result}}"
           NPM3_RESULTS: "${{steps.npm3.outputs.result}}"
         with:
-          runners: npm1,npm2,npm3
+          runners: testUtils,testUi,testWeb,npm1,npm2,npm3
