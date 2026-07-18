@@ -299,15 +299,16 @@ For Playwright interface run:
 
 ## Project Structure
 
-This project is a monorepo with shared packages and applications.
+This project is a monorepo containing two Next.js applications (`admin` and `web`), shared packages, Vitest Unit Testing, and  Playwright end-to-end tests.
 
 Business-to-Consumer-Store-Eugene-Kosiak/
 ├── .github/
 │   └── workflows/
 │       └── grading.yml
 ├── .turbo/
+│   ├── cache/
+│   └── preferences/
 ├── .vscode/
-│   └── settings.json
 ├── apps/
 │   ├── admin/
 │   │   ├── public/
@@ -317,46 +318,51 @@ Business-to-Consumer-Store-Eugene-Kosiak/
 │   │   │   │   │   ├── auth/
 │   │   │   │   │   │   └── route.ts
 │   │   │   │   │   ├── products/
-│   │   │   │   │   │   ├── [id]/
-│   │   │   │   │   │   │   └── route.ts
-│   │   │   │   │   │   ├── toggle/
-│   │   │   │   │   │   │   └── route.ts
+│   │   │   │   │   ├── [id]/
 │   │   │   │   │   │   └── route.ts
-│   │   │   │   │   └── purchases/
-│   │   │   │   │       └── route.ts
-│   │   │   │   ├── components/
-│   │   │   │   │   ├── ProductForm.tsx
-│   │   │   │   │   ├── ProductList.tsx
-│   │   │   │   │   └── PurchaseList.tsx
-│   │   │   │   ├── fonts/
-│   │   │   │   ├── product/
-│   │   │   │   │   └── [urlId]/
-│   │   │   │   │       └── page.tsx
-│   │   │   │   ├── products/
-│   │   │   │   │   └── create/
-│   │   │   │   │       └── page.tsx
-│   │   │   │   ├── purchases/
-│   │   │   │   ├── favicon.ico
-│   │   │   │   ├── globals.css
-│   │   │   │   ├── layout.tsx
-│   │   │   │   ├── page.module.css
-│   │   │   │   ├── page.tsx
-│   │   │   │   └── toggleButton.tsx
-│   │   │   └── utils/
-│   │   ├── .env
-│   │   ├── .gitignore
-│   │   ├── eslint.config.js
-│   │   ├── global.d.ts
-│   │   ├── next-env.d.ts
-│   │   ├── next.config.js
-│   │   ├── package.json
-│   │   ├── postcss.config.mjs
-│   │   ├── README.md
-│   │   ├── tailwind.config.ts
-│   │   └── tsconfig.json
-│   │
+│   │   │   │   │   ├── toggle/
+│   │   │   │   │   │   └── route.ts
+│   │   │   │   │   └── route.ts
+│   │   │   │   └── purchases/
+│   │   │   │       └── route.ts
+│   │   │   ├── components/
+│   │   │   │   ├── ProductForm.tsx
+│   │   │   │   ├── ProductList.tsx
+│   │   │   │   └── PurchaseList.tsx
+│   │   │   ├── fonts/
+│   │   │   │   ├── GeistMonoVF.woff
+│   │   │   │   └── GeistVF.woff
+│   │   │   ├── product/
+│   │   │   │   └── [urlId]/
+│   │   │   │       └── page.tsx
+│   │   │   ├── products/
+│   │   │   │   └── create/
+│   │   │   │       └── page.tsx
+│   │   │   ├── purchases/
+│   │   │   │   └── page.tsx
+│   │   │   ├── favicon.ico
+│   │   │   ├── globals.css
+│   │   │   ├── layout.tsx
+│   │   │   ├── page.module.css
+│   │   │   ├── page.tsx
+│   │   │   └── toggleButton.tsx
+│   │   └── utils/
+│   │       └── auth.ts
+│   ├── .env
+│   ├── .gitignore
+│   ├── eslint.config.js
+│   ├── global.d.ts
+│   ├── next-env.d.ts
+│   ├── next.config.js
+│   ├── package.json
+│   ├── postcss.config.mjs
+│   ├── README.md
+│   ├── tailwind.config.ts
+│   └── tsconfig.json
+│
 │   └── web/
 │       ├── public/
+│       │   └── B2CLogo.png
 │       ├── src/
 │       │   ├── app/
 │       │   │   ├── api/
@@ -394,6 +400,8 @@ Business-to-Consumer-Store-Eugene-Kosiak/
 │       │   │   ├── success/
 │       │   │   │   └── page.tsx
 │       │   │   ├── tags/
+│       │   │   │   └── [tag]/
+│       │   │   │       └── page.tsx
 │       │   │   ├── favicon.ico
 │       │   │   ├── globals.css
 │       │   │   ├── layout.tsx
@@ -403,23 +411,36 @@ Business-to-Consumer-Store-Eugene-Kosiak/
 │       │   │   ├── Auth/
 │       │   │   │   └── LogoutButton.tsx
 │       │   │   ├── Cart/
+│       │   │   │   ├── CartContext.test.tsx
 │       │   │   │   └── CartContext.tsx
 │       │   │   ├── Layout/
+│       │   │   │   ├── AppLayout.tsx
+│       │   │   │   └── TopMenu.tsx
 │       │   │   ├── Menu/
+│       │   │   │   ├── __screenshots__/
+│       │   │   │   │   └── renders-selected-summary-item-with-count-1.png
 │       │   │   │   ├── CategoryList.tsx
 │       │   │   │   ├── LeftMenu.tsx
+│       │   │   │   ├── LinkList.test.tsx
 │       │   │   │   ├── LinkList.tsx
+│       │   │   │   ├── SummaryItem.test.tsx
 │       │   │   │   ├── SummaryItem.tsx
 │       │   │   │   └── TagList.tsx
 │       │   │   ├── Themes/
+│       │   │   │   ├── ThemeContext.tsx
+│       │   │   │   └── ThemeSwitcher.tsx
 │       │   │   ├── Content.tsx
 │       │   │   ├── Main.tsx
 │       │   │   └── SearchBox.tsx
 │       │   ├── functions/
+│       │   │   ├── categories.test.ts
 │       │   │   ├── categories.ts
+│       │   │   ├── tags.test.ts
 │       │   │   └── tags.ts
 │       │   ├── mocks/
+│       │   │   └── link.tsx
 │       │   └── types/
+│       │       └── index.d.ts
 │       ├── .env
 │       ├── .gitignore
 │       ├── eslint.config.js
@@ -431,15 +452,16 @@ Business-to-Consumer-Store-Eugene-Kosiak/
 │       ├── README.md
 │       ├── tailwind.config.ts
 │       ├── tsconfig.json
-│       ├── vitest.setup.ts
+│       ├── vitest.setup.tsx
 │       └── vitest.workspace.ts
 │
 ├── packages/
 │   ├── db/
 │   │   ├── prisma/
 │   │   │   ├── migrations/
-│   │   │   │   └── 20260605063704_init/
-│   │   │   │       └── migration.sql
+│   │   │   │   ├── 20260605063704_init/
+│   │   │   │   │   └── migration.sql
+│   │   │   │   └── migration_lock.toml
 │   │   │   ├── dev.db
 │   │   │   └── schema.prisma
 │   │   ├── src/
@@ -464,6 +486,15 @@ Business-to-Consumer-Store-Eugene-Kosiak/
 │   ├── typescript-config/
 │   ├── ui/
 │   └── utils/
+│       ├── src/
+│       │   ├── classes.test.ts
+│       │   ├── classes.ts
+│       │   ├── url.test.ts
+│       │   └── url.ts
+│       ├── eslint.config.mjs
+│       ├── package.json
+│       ├── README.md
+│       └── tsconfig.json
 │
 ├── tests/
 │   └── playwright/
@@ -484,12 +515,14 @@ Business-to-Consumer-Store-Eugene-Kosiak/
 │       │       ├── register-screen.spec.ts
 │       │       ├── search-screen.spec.ts
 │       │       └── tags-screen.spec.ts
-│       ├── auth.setup.ts
-│       ├── package.json
-│       ├── playwright.config.ts
-│       └── tsconfig.json
+│       │   ├── auth.setup.ts
+│       │   ├── .gitignore
+│       │   ├── package.json
+│       │   ├── playwright.config.ts
+│       │   └── tsconfig.json
 │
 ├── storybook/
+│   ├── .gitignore
 │   ├── .storybook/
 │   ├── stories/
 │   ├── package.json
@@ -503,7 +536,6 @@ Business-to-Consumer-Store-Eugene-Kosiak/
 ├── pnpm-workspace.yaml
 ├── turbo.json
 ├── .gitignore
-├── .npmrc
 └── .prettierrc
 
 ### Applications

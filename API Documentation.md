@@ -707,14 +707,14 @@ Fields:
 ---
 # .env files
 
-packages/db/.env:
+packages/db/.env: <br>
 
 ![alt text](image-1.png)
 
-apps/web/.env:
+apps/web/.env: <br>
 
 ![alt text](image-3.png)
 
-apps/admin/.env:
+apps/admin/.env: <br>
 
 ![alt text](image-2.png)
