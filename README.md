@@ -27,6 +27,48 @@ The application builds on an existing monorepo structure from WSU Blog Post (Ass
 | Storefront | [https://business-to-consumer-store-eugene-k-ten.vercel.app/](https://business-to-consumer-store-eugene-k-ten.vercel.app/) |
 | Admin | [https://business-to-consumer-store-eugene-k-iota.vercel.app/](https://business-to-consumer-store-eugene-k-iota.vercel.app/) |
 
+## Table of Contents
+
+1. [Local Development](#local-development)
+2. [Live Deployment](#live-deployment)
+3. [Test Credentials](#test-credentials)
+4. [Success Criteria](#success-criteria)
+5. [Requirements](#requirements)
+   1. [Assignment 2.1 - Client (Storefront)](#assignment-21---client-storefront)
+      1. [Home Screen](#home-screen)
+      2. [Product List / Filtering](#product-list--filtering)
+      3. [Detail Screen](#detail-screen)
+      4. [Category Screen](#category-screen)
+      5. [Tag Screen](#tag-screen)
+      6. [Search Screen](#search-screen)
+      7. [Cart Screen](#cart-screen)
+      8. [Purchase Flow](#purchase-flow)
+   2. [Assignment 2.2 - Admin](#assignment-22---admin)
+      1. [Admin Home Screen](#admin-home-screen)
+      2. [Admin List Screen](#admin-list-screen)
+      3. [Admin Create & Update Screen](#admin-create--update-screen)
+   3. [Assignment 2.3 - Backend Integration](#assignment-23---backend-integration)
+      1. [Backend / Store Logic](#backend--store-logic)
+      2. [Backend / Cart & Checkout](#backend--cart--checkout)
+      3. [Backend / Purchases](#backend--purchases)
+6. [Admin Authentication](#admin-authentication)
+7. [Prerequisites](#prerequisites)
+8. [Installing the Project](#installing-the-project)
+9. [Environment](#environment)
+10. [Running the Project](#running-the-project-setup---local)
+11. [Production](#production)
+12. [Database Setup](#database-setup)
+13. [Running Tests](#running-tests)
+    1. [Unit Tests](#unit-tests)
+    2. [E2E Tests](#e2e-tests)
+14. [Project Structure](#project-structure)
+    1. [Applications](#applications)
+    2. [Packages](#packages)
+    3. [Tests](#tests)
+15. [Database Schema](#database-schema)
+16. [Application Notes](#application-notes)
+17. [Final Notes](#final-notes)
+
 
 ### Test Credentials
 
@@ -46,7 +88,7 @@ The application builds on an existing monorepo structure from WSU Blog Post (Ass
 
 ---
 
-## 👾 Requirements - Assignment 2.1 - Client (Storefront)
+## Requirements - Assignment 2.1 - Client (Storefront)
 
 ### HOME SCREEN
 
@@ -128,7 +170,7 @@ The application builds on an existing monorepo structure from WSU Blog Post (Ass
 
 ---
 
-## 👾 Requirements - Assignment 2.2 - Admin
+## Requirements - Assignment 2.2 - Admin
 
 ### ADMIN HOME SCREEN
 
@@ -183,7 +225,7 @@ The application builds on an existing monorepo structure from WSU Blog Post (Ass
 
 ---
 
-## 👾 Requirements - Assignment 2.3 (Backend Integration)
+## Requirements - Assignment 2.3 (Backend Integration)
 
 ### BACKEND / STORE LOGIC
 
@@ -300,7 +342,7 @@ https://business-to-consumer-store-eugene-k-iota.vercel.app/
 ```
 
 ## Database Setup
-Run these once after setting your DATABASE_URL:
+Run these commands in the packages/db folder terminal once after setting your DATABASE_URL:
 
 1. Generate the Prisma client
 pnpm --filter @repo/db db:generate
@@ -320,7 +362,7 @@ pnpm --filter @repo/db studio
 ## Running tests
 
 ### Unit Tests:
-To run the tests please run the following in the root folder, this will open Vitest Interface which shows 16 unit tests passing:
+To run the tests please run the following in the root folder (Business-to-Consumer-Store-Eugene-Kosiak) terminal, this will open Vitest Interface which shows 16 unit tests passing:
 - turbo dev:test 
 
 ### E2E Tests:

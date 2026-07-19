@@ -135,24 +135,24 @@ Can:
 
 ---
 
-# Authentication API
+# Customer Authentication API
 
 ## POST `/api/auth`
 
 ### Description
 
-Logs in a user and creates a session.
+Logs in a user (admin or customer) and creates a session.
 
-### Authentication
+### Authentication (Web Access - Login)
 
-None required.
+- None Required
 
 ### Request Body
 
 ```json
 {
   "email": "user@test.com",
-  "password": "password123"
+  "password": "user123"
 }
 ```
 
@@ -170,6 +170,37 @@ None required.
 }
 ```
 
+### Authentication (Admin Access - Login)
+
+- None Required
+
+### Request Body
+
+```json
+{
+  "email": "admin@test.com",
+  "password": "admin123"
+}
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "user": {
+    "id": 1,
+    "name": "Admin Mark",
+    "email": "admin@test.com",
+    "role": "ADMIN"
+  }
+}
+```
+
+```json
+ Redirect to login page with failed login message
+```
+
 ### Notes
 
 - Password validated using bcrypt
@@ -182,7 +213,7 @@ None required.
 
 ### Description
 
-Logs out the current user.
+Logs out the current user (customer/admin).
 
 ### Authentication
 
@@ -195,6 +226,7 @@ Required
   "success": true
 }
 ```
+- deletes JWT and logs out user
 
 ---
 
@@ -203,6 +235,9 @@ Required
 ### Description
 
 Creates a new customer account.
+
+### Status Codes
+- 400 Bad Request — One or more required fields are missing. The name, email, and password are required.
 
 ### Authentication
 
@@ -220,29 +255,29 @@ None required.
 
 ### Response
 
+- Registration was successful. The user is redirected to /register?success=true.
+
 ```json
 {
   "success": true
 }
 ```
-
-### Errors
-
+- 400
+```json
+{
+  "error": "Name, email and password are required"
+}
+```
+- Acount already exists with the same email. The user is redirected to /register?error=exists.
 ```json
 {
   "error": "User already exists"
 }
 ```
 
-Status Code:
-
-```text
-409 Conflict
-```
-
 ---
 
-# Product API
+# Product API - Customer
 
 ## GET `/api/products`
 
@@ -273,6 +308,7 @@ GET /api/products?category=Electronics&search=headphones
 
 ### Response
 
+- Returns all active products
 ```json
 [
   {
@@ -298,12 +334,16 @@ GET /api/products?category=Electronics&search=headphones
 
 Returns a single product using its URL slug.
 
+### Status Codes
+- 404 Not Found — No active product exists with the supplied urlId.
+
 ### Authentication
 
 None required.
 
 ### Response
 
+- Returns a specific product
 ```json
 {
   "id": 1,
@@ -317,6 +357,340 @@ None required.
 }
 ```
 
+- 404
+```json
+{ 
+  "error": "Not found" 
+}
+```
+
+---
+
+## POST `/api/create-checkout-session`
+
+### Description
+
+Creates a Stripe Checkout Session for the user's cart.
+
+### Status Codes
+- 200 OK — A Stripe Checkout Session was successfully created and its session ID is returned.
+- 500 Internal Server Error — The Stripe secret key is missing.
+- 500 Internal Server Error — An unexpected error occurred while creating the Stripe Checkout Session.
+
+### Authentication
+
+CUSTOMER required.
+
+### Request Body
+
+```json
+{
+  "items": [
+    {
+      "productId": 1,
+      "quantity": 1
+    }
+  ]
+}
+```
+
+### Response
+- 200
+```json
+{
+  "url": "https://checkout.stripe.com/..."
+}
+```
+- 500
+```json
+{
+  "error": "Stripe key missing"
+}
+{
+  "error": "Failed to create session"
+}
+```
+
+### Notes
+
+- Stripe Checkout handles payment processing
+- Products are revalidated before session creation
+- Checkout totals are calculated server-side
+
+---
+
+## POST `/api/purchase-from-stripe`
+
+### Description
+
+Verifies a Stripe Checkout Session, updates product stock, and creates a purchase record for the authenticated customer.
+
+### Status Codes
+- 500 Internal Server Error — An unexpected error occurred while creating the Stripe Checkout Session.
+
+### Authentication
+
+CUSTOMER required.
+
+### Request Body
+
+```json
+{
+  "items": [
+    {
+      "productId": 1,
+      "quantity": 1
+    }
+  ]
+}
+```
+
+### Response
+
+- 500
+```json
+{
+  "error": "Stripe key missing"
+}
+{
+  "error": "Failed to create session"
+}
+```
+
+### Notes
+
+- Stripe Checkout handles payment processing
+- Products are revalidated before session creation
+- Checkout totals are calculated server-side
+
+---
+
+# Purchase API - Customer
+
+## GET `/api/purchases`
+
+### Description
+
+Returns all purchases belonging to the authenticated user.
+
+### Status Codes
+- 200 OK — A new purchase was successfully created and product stock was updated.
+- 400 Bad Request — The submitted cart is empty.
+- 401 Unauthorized — No valid authenticated user could be identified.
+- 04 Not Found — The specified purchase does not exist or does not belong to the authenticated user. 
+- 500 Internal Server Error — An unexpected error occurred while creating the purchase, including database errors or insufficient product stock.
+
+### Authentication
+
+CUSTOMER required.
+
+### Response
+- 200
+```json
+[
+  {
+    "id": 1,
+    "date": "2026-06-05T10:00:00Z",
+    "total": 348,
+    "items": [
+      {
+        "productId": 1,
+        "title": "Wireless Headphones",
+        "price": 199,
+        "quantity": 1
+      }
+    ]
+  }
+]
+```
+
+- 400
+```json
+{
+  "error": "Cart empty"
+}
+```
+
+- 401
+```json
+{
+  "error": "Unauthorized"
+}
+
+```
+
+- 404
+```json
+{
+  "error": "Purchase not found"
+}
+
+```
+
+- 500
+```json
+{
+  "error": "Failed to create purchase"
+}
+```
+
+---
+
+## DELETE `/api/purchase`
+
+### Description
+
+Deletes a purchase record owned by the authenticated user.
+
+### Status Codes
+- 401 Unauthorized — No valid authenticated user could be identified.
+- 404 Not Found — The specified purchase does not exist or does not belong to the authenticated user.
+- 500 Internal Server Error — An unexpected error occurred while deleting the purchase.
+
+### Authentication
+
+CUSTOMER required.
+
+### Response
+
+- 200
+```json
+{
+  "success": true
+}
+```
+
+- 401
+```json
+{
+  "error": "Unauthorized"
+}
+```
+
+- 404
+```json
+{
+  "error": "Purchase not found"
+}
+```
+
+- 500
+```json
+{
+  "error": "Failed to delete purchase"
+}
+```
+
+### Notes
+
+Users can only delete purchases associated with their own account.
+
+---
+
+## POST '/api/purchase-from-stripe'
+
+### Description
+
+Returns all purchases belonging to the authenticated user, and directs user to Stripe to pay for products.
+
+### Status Codes
+- 200 OK — The Stripe purchase was successfully verified, stock was updated, and the purchase was saved to the database.
+- 401 Unauthorized — No user_auth_token cookie was found.
+- 500 Internal Server Error — The Stripe secret key is missing or an unexpected error occurred while processing the Stripe purchase.
+
+### Authentication
+
+CUSTOMER required.
+
+### Response
+
+- 200
+```json
+{
+  "success": true
+}
+```
+
+- 401
+```json
+{
+  "error": "Unauthorized"
+}
+```
+
+- 500
+```json
+{
+  "error": "Failed"
+}
+```
+---
+
+# Cart & Checkout API - Customer
+
+## Cart Behaviour
+
+- Cart state is stored client-side
+- Cart items are validated server-side
+- Stock quantities are validated before purchase
+- Purchase totals are calculated server-side
+
+---
+
+## GET /api/purchases
+
+### Description
+Retrieves all purchases for the administrative dashboard.
+
+### Status Codes
+- 200 OK — All purchases were successfully retrieved for the admin dashboard.
+- 401 Unauthorized — No authentication cookie exists or the JWT token is invalid or expired.
+
+### Authentication
+
+ADMIN required.
+
+### Response
+
+- 401
+```json
+{ 
+  "error": "Unauthorized" 
+}
+```
+
+---
+# Admin Authentication API
+
+## POST '/api/auth'
+
+### Description
+
+Authenticates an administrator using their email and password.
+
+### Authentication
+
+None required.
+
+### Response
+
+- Successful login; creates an auth_token JWT cookie and redirects to the admin dashboard.
+- Invalid email or password; redirects to /?error=invalid which displays an eror message of only admin access with valid email and passowrd is allowed access.
+
+---
+
+## DELETE /api/auth
+
+### Description
+Logs out the administrator and removes the authentication cookie.
+
+### Authentication
+
+None Required
+
+### Response
+
+- Redirects to the login page and expires the auth_token cookie to 0, so the cookie is deleted.
 ---
 
 ## POST `/api/products`
@@ -324,6 +698,11 @@ None required.
 ### Description
 
 Creates a new product.
+
+### Status Codes
+- 200 OK — The product was successfully created and the newly created product is returned.
+- 400 Bad Request — One or more required product fields are missing.
+- 401 Unauthorized — The user is not logged in, the JWT is missing, invalid, or expired.
 
 ### Authentication
 
@@ -347,6 +726,7 @@ ADMIN required.
 
 ### Response
 
+- 200
 ```json
 {
   "success": true,
@@ -354,6 +734,19 @@ ADMIN required.
 }
 ```
 
+- 400
+```json
+{ 
+  "error": "Missing required fields" 
+}
+```
+
+- 401
+```json
+{ 
+  "error": "Session expired" 
+}
+```
 ---
 
 ## PUT `/api/products/[id]`
@@ -362,18 +755,56 @@ ADMIN required.
 
 Updates an existing product.
 
+### Status Codes
+- 200 OK — The product was successfully updated and the updated product is returned.
+- 400 Bad Request — The request body contains invalid JSON or required product fields are missing.
+- 401 Unauthorized — The user is not logged in, the JWT is missing, invalid, or expired.
+- 404 Not Found — No product exists with the supplied ID.
+- 500 Internal Server Error — An unexpected server or database error occurred while updating the product.
+
 ### Authentication
 
 ADMIN required.
 
 ### Response
-
+- 200
 ```json
 {
   "success": true
 }
 ```
 
+- 400
+```json
+{ 
+  "error": "Missing required fields" 
+}
+
+{ 
+  "error": "Invalid JSON" 
+}
+```
+
+- 401
+```json
+{ 
+  "error": "Session expired" 
+}
+```
+
+- 404
+```json
+{ 
+  "error": "Product not found" 
+}
+```
+
+- 500
+```json
+{ 
+  "error": "Server Error" 
+}
+```
 ---
 
 ## DELETE `/api/products/[id]`
@@ -382,157 +813,137 @@ ADMIN required.
 
 Deletes a product.
 
+### Status Codes
+- 200 OK — The product was successfully deleted.
+- 401 Unauthorized — The user is not logged in, the JWT is missing, invalid, or expired.
+- 404 Not Found — No product exists with the supplied ID.
+- 500 Internal Server Error — An unexpected database or server error occurred while deleting the product.
+
 ### Authentication
 
 ADMIN required.
 
 ### Response
 
+- 200
 ```json
 {
   "success": true
 }
 ```
 
+- 401
+```json
+{ 
+  "error": "Session expired" 
+}
+```
+
+- 404
+```json
+{ 
+  "error": "Product not found" 
+}
+```
+
+- 500
+```json
+{ 
+  "error": "Server Error" 
+}
+```
+
 ---
 
-## PATCH `/api/products/[id]/toggle`
+## PATCH `/api/products/toggle`
 
 ### Description
 
 Toggles a product between active and inactive states.
 
+### Status Codes
+- 401 Unauthorized — The user is not logged in, the JWT is missing, invalid, or expired.
+
 ### Authentication
 
 ADMIN required.
 
 ### Response
 
+- 401
 ```json
-{
-  "success": true,
-  "active": false
+{ 
+  "error": "Session expired" 
 }
 ```
 
-### Notes
-
-Uses the Prisma field:
-
-```text
-active Boolean
-```
-
-This allows products to be hidden without deleting them.
-
 ---
-
-# Cart & Checkout API
-
-## Cart Behaviour
-
-- Cart state is stored client-side
-- Cart items are validated server-side
-- Stock quantities are validated before purchase
-- Purchase totals are calculated server-side
-
----
-
-## POST `/api/cart/checkout`
-
-### Description
-
-Creates a Stripe Checkout Session for the user's cart.
-
-### Authentication
-
-CUSTOMER required.
-
-### Request Body
-
-```json
-{
-  "items": [
-    {
-      "productId": 1,
-      "quantity": 1
-    }
-  ]
-}
-```
-
-### Response
-
-```json
-{
-  "url": "https://checkout.stripe.com/..."
-}
-```
-
-### Notes
-
-- Stripe Checkout handles payment processing
-- Products are revalidated before session creation
-- Checkout totals are calculated server-side
-
----
-
-# Purchase API
 
 ## GET `/api/purchases`
 
 ### Description
 
-Returns all purchases belonging to the authenticated user.
+Gets all purchases made by customers in the web store.
+
+### Status Codes
+- 401 Unauthorized — The user is not logged in, the JWT is missing, invalid, or expired.
 
 ### Authentication
 
-CUSTOMER required.
+ADMIN required.
 
 ### Response
 
+- 401
+```json
+{ 
+  "error": "Session expired" 
+}
+```
+
+- Purchase Details
 ```json
 [
   {
     "id": 1,
-    "date": "2026-06-05T10:00:00Z",
+    "userId": 1,
     "total": 348,
+    "date": "2026-06-05T10:00:00.000Z",
+    "user": {
+      "id": 1,
+      "name": "John Doe",
+      "email": "user@test.com",
+      "role": "CUSTOMER"
+    },
     "items": [
       {
+        "id": 1,
+        "purchaseId": 1,
         "productId": 1,
         "title": "Wireless Headphones",
         "price": 199,
-        "quantity": 1
+        "quantity": 1,
+        "imageUrl": "...",
+        "product": {
+          "id": 1,
+          "urlId": "wireless-headphones",
+          "title": "Wireless Headphones",
+          "description": "Premium audio device...",
+          "content": "# Wireless Headphones...",
+          "imageUrl": "...",
+          "category": "Electronics",
+          "brand": "BrandX",
+          "tags": "Audio,Wireless,Tech",
+          "price": 199,
+          "stock": 12,
+          "rating": 4.8,
+          "active": true
+        }
       }
     ]
   }
 ]
 ```
-
----
-
-## DELETE `/api/purchases/[id]`
-
-### Description
-
-Deletes a purchase record owned by the authenticated user.
-
-### Authentication
-
-CUSTOMER required.
-
-### Response
-
-```json
-{
-  "success": true
-}
-```
-
-### Notes
-
-Users can only delete purchases associated with their own account.
-
 ---
 
 # Error Responses
@@ -711,10 +1122,25 @@ packages/db/.env: <br>
 
 ![alt text](image-1.png)
 
+```env
+DATABASE_URL="postgresql://neondb_owner:npg_IlJkjTs34LeC@ep-billowing-credit-ap4jftat.c-7.us-east-1.aws.neon.tech/neondb?sslmode=require"
+```
 apps/web/.env: <br>
 
-![alt text](image-3.png)
+![alt text](image-2.png)
+
+```env
+DATABASE_URL="postgresql://neondb_owner:npg_IlJkjTs34LeC@ep-billowing-credit-ap4jftat-pooler.c-7.us-east-1.aws.neon.tech/neondb?sslmode=require"
+JWT_SECRET=secret
+STRIPE_SECRET_KEY=sk_test_51TdnJvA0moIFd3LAAqYKgZ13se45dQhfF5wgXSUaNCRloGU3ZiYwcFlHGJmCfZc0I5RySL713VuSxYxFTlaTaRAK00JOzBvmL6
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_51TdnJvA0moIFd3LAho0qDIhRNKf6PkzN1DUBehinmYgQsqaibvpS1G63auDo17AlRZUxTYMAW5Xdoxjbj0EqU461006DusRJn8
+```
 
 apps/admin/.env: <br>
 
-![alt text](image-2.png)
+![alt text](image-3.png)
+
+```env
+PASSWORD=admin123
+JWT_SECRET=super-secret-password
+```

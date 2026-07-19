@@ -57,35 +57,6 @@ export async function POST(req: Request) {
     const lineItems = session.line_items?.data || [];
 
     // Create purchase row in purchase database with user ID, total price, and associated items
-    /*
-    const purchase = await prisma.purchase.create({
-      data: {
-        userId: decoded.id, // specific user
-
-        total: (session.amount_total || 0) / 100, // stripe stores money in cents
-
-        items: {
-          create: lineItems.map((item: any) => ({
-            productId: Number(
-              (item.price?.product as Stripe.Product)
-                ?.metadata?.productId ?? 1
-            ),
-
-            imageUrl:
-              (item.price?.product as Stripe.Product)
-                ?.metadata?.imageUrl || "",
-
-            title: item.description || "Unknown Product",
-
-            price: (item.price?.unit_amount || 0) / 100,
-
-            quantity: item.quantity || 1,
-          })),
-        },
-      },
-    });
-    */
-    // Create purchase row in purchase database with user ID, total price, and associated items
     const purchase = await prisma.$transaction(async (tx) => {
 
       // Update stock for each purchased product
