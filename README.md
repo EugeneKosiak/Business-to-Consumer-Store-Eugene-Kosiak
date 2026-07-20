@@ -24,7 +24,7 @@ The application builds on an existing monorepo structure from WSU Blog Post (Ass
 
 | App | URL |
 |---|---|
-| Storefront | [https://business-to-consumer-store-eugene-k-ten.vercel.app/](https://business-to-consumer-store-eugene-k-ten.vercel.app/) |
+| Customer | [https://business-to-consumer-store-eugene-k-ten.vercel.app/](https://business-to-consumer-store-eugene-k-ten.vercel.app/) |
 | Admin | [https://business-to-consumer-store-eugene-k-iota.vercel.app/](https://business-to-consumer-store-eugene-k-iota.vercel.app/) |
 
 ## Table of Contents
@@ -34,7 +34,7 @@ The application builds on an existing monorepo structure from WSU Blog Post (Ass
 3. [Test Credentials](#test-credentials)
 4. [Success Criteria](#success-criteria)
 5. [Requirements](#requirements)
-   1. [Assignment 2.1 - Client (Storefront)](#assignment-21---client-storefront)
+   1. [Assignment 2.1 - Client (Customer)](#assignment-21---client-customer)
       1. [Home Screen](#home-screen)
       2. [Product List / Filtering](#product-list--filtering)
       3. [Detail Screen](#detail-screen)
@@ -88,7 +88,7 @@ The application builds on an existing monorepo structure from WSU Blog Post (Ass
 
 ---
 
-## Requirements - Assignment 2.1 - Client (Storefront)
+## Requirements - Assignment 2.1 - Client (Customer)
 
 ### HOME SCREEN
 
